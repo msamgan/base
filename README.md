@@ -1,8 +1,28 @@
-# Phantom ERP
+# Base Template
 
-Phantom ERP is a web-based ERP system that is designed to be simple and easy to use. It is built using the Laravel framework and is designed to be easily customizable and extendable. 
+This is a base template for a laravel project.
 
-The goal of Phantom ERP is to provide a simple and
-easy-to-use ERP system that can be used by small and medium-sized businesses.
+## Features
 
+- [x] Laravel 11
+- [x] PHP 8.*
+- [x] Role Based Access Control
+- [x] User Management
+- [x] User Profile
 
+## To Make a new Module
+
+```bash
+php artisan app:make:module
+```
+This command will create the following files:
+- Controller
+- Model
+- Migration
+- Factory
+- Seeder
+- Request
+- Routes
+- Views
+- Permissions
+- Menu
