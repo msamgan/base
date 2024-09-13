@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import DependentMenu from '@/Components/layout/DependentMenu.jsx'
 import IndependentMenu from '@/Components/layout/IndependentMenu.jsx'
-import { services } from '@/Utils/services.js'
+import { services } from '@/Utils/services/index.js'
 
 export default function TopMenu() {
     const [menuItems, setMenuItems] = useState([])

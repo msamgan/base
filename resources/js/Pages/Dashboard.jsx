@@ -7,7 +7,7 @@ export default function Dashboard({ auth }) {
             <Head title="Dashboard" />
 
             <div className="col-12">
-                Sample page. You're logged in as {auth.user.name} ({auth.user.email}).
+                You're logged in as {auth.user.name} ({auth.user.email}).
             </div>
         </Master>
     )

@@ -2,7 +2,6 @@ import Master from '@/Layouts/Master.jsx'
 import { Head } from '@inertiajs/react'
 import PageHeader from '@/Components/PageHeader.jsx'
 import { hasPermission, makeGetCall } from '@/Utils/methods.js'
-import { permissions } from '@/Utils/constants.js'
 import OffCanvasButton from '@/Components/off_canvas/OffCanvasButton.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Table from '@/Components/layout/Table.jsx'
@@ -13,13 +12,14 @@ import Name from '@/Components/helpers/Name.jsx'
 import ActiveBadge from '@/Components/helpers/ActiveBadge.jsx'
 import Actions from '@/Components/helpers/Actions.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
-import { services } from '@/Utils/services.js'
+import { services } from '@/Utils/services/index.js'
+import { permissions } from '@/Utils/permissions/index.js'
 
 export default function Index({ auth }) {
-    let hasListPermission = hasPermission(auth.user, permissions.role_list)
-    let hasCreatePermission = hasPermission(auth.user, permissions.role_create)
-    let hasUpdatePermission = hasPermission(auth.user, permissions.role_update)
-    let hasDeletePermission = hasPermission(auth.user, permissions.role_delete)
+    let hasListPermission = hasPermission(auth.user, permissions.role.list)
+    let hasCreatePermission = hasPermission(auth.user, permissions.role.create)
+    let hasUpdatePermission = hasPermission(auth.user, permissions.role.update)
+    let hasDeletePermission = hasPermission(auth.user, permissions.role.delete)
 
     const [roles, setRoles] = useState([])
     const [data, setData] = useState([])
@@ -33,7 +33,7 @@ export default function Index({ auth }) {
     }
 
     const getRoles = () => {
-        makeGetCall(services.roles, setRoles, setLoading)
+        makeGetCall(services.role.list, setRoles, setLoading)
     }
 
     const getRole = (id) => {

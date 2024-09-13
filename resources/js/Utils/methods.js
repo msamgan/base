@@ -33,7 +33,7 @@ export const makeGetCall = (url, setState, setLoading) => {
     axios
         .get(url)
         .then((response) => {
-            console.log(response.data)
+            // console.log(response.data)
             setState(response.data)
         })
         .catch((error) => {

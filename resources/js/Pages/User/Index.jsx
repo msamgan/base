@@ -1,7 +1,7 @@
 import Master from '@/Layouts/Master.jsx'
 import { Head } from '@inertiajs/react'
 import { hasPermission, makeGetCall } from '@/Utils/methods.js'
-import { permissions } from '@/Utils/constants.js'
+import { permissions } from '@/Utils/permissions/index.js'
 import { useEffect, useState } from 'react'
 import Actions from '@/Components/helpers/Actions.jsx'
 import Name from '@/Components/helpers/Name.jsx'
@@ -13,12 +13,13 @@ import PageHeader from '@/Components/PageHeader.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Form from '@/Pages/User/Partials/Form.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
+import { services } from '@/Utils/services/index.js'
 
 export default function Index({ auth }) {
-    let hasListPermission = hasPermission(auth.user, permissions.user_list)
-    let hasCreatePermission = hasPermission(auth.user, permissions.user_create)
-    let hasUpdatePermission = hasPermission(auth.user, permissions.user_update)
-    let hasDeletePermission = hasPermission(auth.user, permissions.user_delete)
+    let hasListPermission = hasPermission(auth.user, permissions.user.list)
+    let hasCreatePermission = hasPermission(auth.user, permissions.user.create)
+    let hasUpdatePermission = hasPermission(auth.user, permissions.user.update)
+    let hasDeletePermission = hasPermission(auth.user, permissions.user.delete)
 
     const [users, setUsers] = useState([])
     const [data, setData] = useState([])
@@ -28,15 +29,15 @@ export default function Index({ auth }) {
     const [roles, setRoles] = useState([])
 
     const getUsers = () => {
-        makeGetCall(route('service.users'), setUsers, setLoading)
+        makeGetCall(services.user.list, setUsers, setLoading)
     }
 
     const getRoles = () => {
-        makeGetCall(route('service.roles'), setRoles, setLoading)
+        makeGetCall(services.role.list, setRoles, setLoading)
     }
 
     const getUser = (id) => {
-        makeGetCall(route('service.user.show', id), setUser, setLoading)
+        makeGetCall(services.user.show(id), setUser, setLoading)
     }
 
     const processUser = (user) => {

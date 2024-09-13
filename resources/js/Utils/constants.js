@@ -1,17 +1,3 @@
-export const permissions = {
-    business_update: 'business.update',
-
-    role_list: 'role.list',
-    role_create: 'role.create',
-    role_update: 'role.update',
-    role_delete: 'role.delete',
-
-    user_list: 'user.list',
-    user_create: 'user.create',
-    user_update: 'user.update',
-    user_delete: 'user.delete',
-}
-
 export const timeZones = [
     { value: 'GMT-12:00', label: '(GMT-12:00) International Date Line West' },
     { value: 'GMT-11:00', label: '(GMT-11:00) Midway Island, Samoa' },

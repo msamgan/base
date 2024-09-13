@@ -30,7 +30,7 @@ class MakeModule extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $moduleName = text(
             label: 'What is Module"s name?',
@@ -108,53 +108,17 @@ class MakeModule extends Command
             $underscoreCasePlural
         );
 
+        $this->createPermission($underscoreCase, $classCase);
+
+        $this->createService($underscoreCase, $underscoreCasePlural);
+
+        $this->createRoutesJs($underscoreCase);
+
         $this->info("Module: {$moduleName} created successfully");
 
         $this->info('To Do:');
         $this->info('1. Update the migrations for the module table.');
-        $this->info('2. Update the Permissions in PermissionEnum.');
-        $this->info('3. Update the Permissions in constants.js.');
-        $this->info('4. Update the Routes and Services in the services.js.');
-        $this->info('5. Run the Migrations.');
-    }
-
-    public function createView(
-        string $classCase,
-        string $classCasePlural,
-        string $underscoreCase,
-        string $underscoreCasePlural,
-    ): void {
-        $viewHelperStubFile = file_get_contents(base_path('stubs/module.view.helper.stub'));
-        $viewFormStubFile = file_get_contents(base_path('stubs/module.view.form.stub'));
-        $viewIndexStubFile = file_get_contents(base_path('stubs/module.view.index.stub'));
-
-        $viewHelperStubFile = str_replace('{classCase}', $classCase, $viewHelperStubFile);
-        $viewHelperStubFile = str_replace('{classCasePlural}', $classCasePlural, $viewHelperStubFile);
-        $viewHelperStubFile = str_replace('{underscoreCase}', $underscoreCase, $viewHelperStubFile);
-        $viewHelperStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $viewHelperStubFile);
-
-        $viewFormStubFile = str_replace('{classCase}', $classCase, $viewFormStubFile);
-        $viewFormStubFile = str_replace('{classCasePlural}', $classCasePlural, $viewFormStubFile);
-        $viewFormStubFile = str_replace('{underscoreCase}', $underscoreCase, $viewFormStubFile);
-        $viewFormStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $viewFormStubFile);
-
-        $viewIndexStubFile = str_replace('{classCase}', $classCase, $viewIndexStubFile);
-        $viewIndexStubFile = str_replace('{classCasePlural}', $classCasePlural, $viewIndexStubFile);
-        $viewIndexStubFile = str_replace('{underscoreCase}', $underscoreCase, $viewIndexStubFile);
-        $viewIndexStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $viewIndexStubFile);
-
-        // check if the directory exists
-        if (! is_dir(resource_path("js/Pages/{$classCase}"))) {
-            mkdir(resource_path("js/Pages/{$classCase}"));
-        }
-
-        if (! is_dir(resource_path("js/Pages/{$classCase}/Partials"))) {
-            mkdir(resource_path("js/Pages/{$classCase}/Partials"));
-        }
-
-        file_put_contents(resource_path("js/Pages/{$classCase}/helper.js"), $viewHelperStubFile);
-        file_put_contents(resource_path("js/Pages/{$classCase}/Partials/Form.jsx"), $viewFormStubFile);
-        file_put_contents(resource_path("js/Pages/{$classCase}/Index.jsx"), $viewIndexStubFile);
+        $this->info('4. Run the Migrations.');
     }
 
     private function newMenu(): Menu
@@ -267,5 +231,153 @@ class MakeModule extends Command
         $controllerStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $controllerStubFile);
 
         file_put_contents(app_path("Http/Controllers/{$classCase}Controller.php"), $controllerStubFile);
+    }
+
+    private function createView(
+        string $classCase,
+        string $classCasePlural,
+        string $underscoreCase,
+        string $underscoreCasePlural,
+    ): void {
+        $viewHelperStubFile = file_get_contents(base_path('stubs/module.view.helper.stub'));
+        $viewFormStubFile = file_get_contents(base_path('stubs/module.view.form.stub'));
+        $viewIndexStubFile = file_get_contents(base_path('stubs/module.view.index.stub'));
+
+        $viewHelperStubFile = str_replace('{classCase}', $classCase, $viewHelperStubFile);
+        $viewHelperStubFile = str_replace('{classCasePlural}', $classCasePlural, $viewHelperStubFile);
+        $viewHelperStubFile = str_replace('{underscoreCase}', $underscoreCase, $viewHelperStubFile);
+        $viewHelperStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $viewHelperStubFile);
+
+        $viewFormStubFile = str_replace('{classCase}', $classCase, $viewFormStubFile);
+        $viewFormStubFile = str_replace('{classCasePlural}', $classCasePlural, $viewFormStubFile);
+        $viewFormStubFile = str_replace('{underscoreCase}', $underscoreCase, $viewFormStubFile);
+        $viewFormStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $viewFormStubFile);
+
+        $viewIndexStubFile = str_replace('{classCase}', $classCase, $viewIndexStubFile);
+        $viewIndexStubFile = str_replace('{classCasePlural}', $classCasePlural, $viewIndexStubFile);
+        $viewIndexStubFile = str_replace('{underscoreCase}', $underscoreCase, $viewIndexStubFile);
+        $viewIndexStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $viewIndexStubFile);
+
+        // check if the directory exists
+        if (! is_dir(resource_path("js/Pages/{$classCase}"))) {
+            mkdir(resource_path("js/Pages/{$classCase}"));
+        }
+
+        if (! is_dir(resource_path("js/Pages/{$classCase}/Partials"))) {
+            mkdir(resource_path("js/Pages/{$classCase}/Partials"));
+        }
+
+        file_put_contents(resource_path("js/Pages/{$classCase}/helper.js"), $viewHelperStubFile);
+        file_put_contents(resource_path("js/Pages/{$classCase}/Partials/Form.jsx"), $viewFormStubFile);
+        file_put_contents(resource_path("js/Pages/{$classCase}/Index.jsx"), $viewIndexStubFile);
+    }
+
+    private function createPermission(
+        string $underscoreCase,
+        string $classCase,
+    ): void {
+        // JS Part..
+        $permissionStubFile = file_get_contents(base_path('stubs/module.permission.stub'));
+
+        $permissionStubFile = str_replace('{underscoreCase}', $underscoreCase, $permissionStubFile);
+
+        file_put_contents(resource_path("js/Utils/permissions/{$underscoreCase}.js"), $permissionStubFile);
+
+        $permissionImport = "import { {$underscoreCase} } from '@/Utils/permissions/{$underscoreCase}.js';";
+        $addStatement = "    $underscoreCase,";
+
+        $fileLines = file(resource_path('js/Utils/permissions/index.js'));
+
+        foreach ($fileLines as $key => $line) {
+            if ($line === "\n") {
+                $fileLines[$key] = $permissionImport . "\n";
+                array_splice($fileLines, $key + 1, 0, "\n");
+            }
+        }
+
+        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement . "\n");
+
+        file_put_contents(resource_path('js/Utils/permissions/index.js'), implode('', $fileLines));
+
+        // PHP Part..
+        $permissionEnumFile = file(app_path('Enums/PermissionEnum.php'));
+
+        $newPermission = "    case {$classCase}List = '{$underscoreCase}.list';\n";
+        $newPermission .= "    case {$classCase}Create = '{$underscoreCase}.create';\n";
+        $newPermission .= "    case {$classCase}Update = '{$underscoreCase}.update';\n";
+        $newPermission .= "    case {$classCase}Delete = '{$underscoreCase}.delete';\n";
+        $newPermission .= "\n";
+
+        $newPermissionCan = "\n";
+        $newPermissionCan .= "            self::{$classCase}List => 'can:{$underscoreCase}.list',\n";
+        $newPermissionCan .= "            self::{$classCase}Create => 'can:{$underscoreCase}.create',\n";
+        $newPermissionCan .= "            self::{$classCase}Update => 'can:{$underscoreCase}.update',\n";
+        $newPermissionCan .= "            self::{$classCase}Delete => 'can:{$underscoreCase}.delete',\n";
+
+        foreach ($permissionEnumFile as $key => $line) {
+            if (str_starts_with($line, '{')) {
+                array_splice($permissionEnumFile, $key + 1, 0, $newPermission);
+            }
+
+            if (str_ends_with(trim($line), '};')) {
+                array_splice($permissionEnumFile, $key + 1, 0, $newPermissionCan);
+            }
+        }
+
+        file_put_contents(app_path('Enums/PermissionEnum.php'), implode('', $permissionEnumFile));
+    }
+
+    private function createService(
+        string $underscoreCase,
+        string $underscoreCasePlural,
+    ): void {
+        $serviceStubFile = file_get_contents(base_path('stubs/module.service.stub'));
+
+        $serviceStubFile = str_replace('{underscoreCase}', $underscoreCase, $serviceStubFile);
+        $serviceStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $serviceStubFile);
+
+        file_put_contents(resource_path("js/Utils/services/{$underscoreCase}.js"), $serviceStubFile);
+
+        $serviceImport = "import { {$underscoreCase} } from '@/Utils/services/{$underscoreCase}.js';";
+        $addStatement = "    $underscoreCase,";
+
+        $fileLines = file(resource_path('js/Utils/services/index.js'));
+
+        foreach ($fileLines as $key => $line) {
+            if ($line === "\n") {
+                $fileLines[$key] = $serviceImport . "\n";
+                array_splice($fileLines, $key + 1, 0, "\n");
+            }
+        }
+
+        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement . "\n");
+
+        file_put_contents(resource_path('js/Utils/services/index.js'), implode('', $fileLines));
+    }
+
+    private function createRoutesJs(
+        string $underscoreCase,
+    ): void {
+        $routesJsStubFile = file_get_contents(base_path('stubs/module.route.js.stub'));
+
+        $routesJsStubFile = str_replace('{underscoreCase}', $underscoreCase, $routesJsStubFile);
+
+        file_put_contents(resource_path("js/Utils/routes/{$underscoreCase}.js"), $routesJsStubFile);
+
+        $routeImport = "import { {$underscoreCase} } from '@/Utils/routes/{$underscoreCase}.js';";
+        $addStatement = "    $underscoreCase,";
+
+        $fileLines = file(resource_path('js/Utils/routes/index.js'));
+
+        foreach ($fileLines as $key => $line) {
+            if ($line === "\n") {
+                $fileLines[$key] = $routeImport . "\n";
+                array_splice($fileLines, $key + 1, 0, "\n");
+            }
+        }
+
+        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement . "\n");
+
+        file_put_contents(resource_path('js/Utils/routes/index.js'), implode('', $fileLines));
     }
 }

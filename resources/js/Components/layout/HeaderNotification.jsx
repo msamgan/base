@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { formatDuration } from '@/Utils/methods.js'
-import { routes } from '@/Utils/services.js'
+import { routes } from '@/Utils/routes/index.js'
 
 export default function HeaderNotification({ user }) {
     const [unreadNotifications, setUnreadNotifications] = useState(0)

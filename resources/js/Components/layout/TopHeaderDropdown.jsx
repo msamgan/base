@@ -1,6 +1,6 @@
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.jsx'
 import { hasPermission } from '@/Utils/methods.js'
-import { permissions } from '@/Utils/constants.js'
+import { permissions } from '@/Utils/permissions/index.js'
 
 export default function TopHeaderDropdown({ user }) {
     return (
@@ -39,7 +39,7 @@ export default function TopHeaderDropdown({ user }) {
                         <span className="align-middle">My Profile</span>
                     </ResponsiveNavLink>
                 </li>
-                {user.business_id && hasPermission(user, permissions.business_update) && (
+                {user.business_id && hasPermission(user, permissions.business.update) && (
                     <li>
                         <ResponsiveNavLink className="dropdown-item" href={route('business.settings')}>
                             <i className="ri-settings-3-line me-3 mt-1"></i>

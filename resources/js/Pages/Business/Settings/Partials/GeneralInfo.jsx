@@ -4,7 +4,7 @@ import { useForm } from '@inertiajs/react'
 import { currencies, timeZones, unitSystems, weightUnits } from '@/Utils/constants.js'
 import InputError from '@/Components/InputError.jsx'
 import { Transition } from '@headlessui/react'
-import { routes } from '@/Utils/services.js'
+import { routes } from '@/Utils/routes/index.js'
 
 export default function GeneralInfo({ business }) {
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
