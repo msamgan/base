@@ -5,7 +5,7 @@ import InputError from '@/Components/InputError.jsx'
 import { Transition } from '@headlessui/react'
 import { dataObject } from '@/Pages/{classCase}/helper.js'
 import { useEffect, useState } from 'react'
-import { routes } from '@/Utils/services.js'
+import { routes } from '@/Utils/routes/index.js'
 
 export default function Form({ get{classCasePlural}, {underscoreCase} = null}) {
     const [action, setAction] = useState(routes.{underscoreCase}.store)
