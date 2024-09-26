@@ -11,8 +11,8 @@ return new class extends Migration
     {
         $superAdmin = User::create([
             'name' => 'Super Admin',
-            'email' => 'sadmin@perp.com',
-            'password' => bcrypt('Pass@123'),
+            'email' => 'sadmin@base.com',
+            'password' => bcrypt('Pass@123!321'),
             'email_verified_at' => now(),
             'role_id' => RoleEnum::SuperAdmin->id(),
         ]);
