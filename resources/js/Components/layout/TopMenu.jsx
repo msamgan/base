@@ -1,24 +1,15 @@
 import { useEffect, useState } from 'react'
 import DependentMenu from '@/Components/layout/DependentMenu.jsx'
 import IndependentMenu from '@/Components/layout/IndependentMenu.jsx'
-import { services } from '@/Utils/services/index.js'
+import { index } from '@actions/MenuController'
 
 export default function TopMenu() {
     const [menuItems, setMenuItems] = useState([])
 
-    const getMenus = () => {
-        axios
-            .get(services.menu)
-            .then((response) => {
-                setMenuItems(response.data)
-            })
-            .catch((error) => {
-                // console.log(error)
-            })
-    }
+    const getMenus = async () => setMenuItems(await index.data({}))
 
     useEffect(() => {
-        getMenus()
+        getMenus().then()
     }, [])
 
     return (
