@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4065784b6b892d958e9ea91120d5045c",
+    "content-hash": "c546d45c07ba0c13135beeeeba16c23d",
     "packages": [
         {
             "name": "brick/math",
@@ -2735,6 +2735,84 @@
                 }
             ],
             "time": "2025-03-24T10:02:05+00:00"
+        },
+        {
+            "name": "msamgan/lact",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/msamgan/lact.git",
+                "reference": "6bccbc471ff2568c2f4ca10d98e55df9dc51be0f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/msamgan/lact/zipball/6bccbc471ff2568c2f4ca10d98e55df9dc51be0f",
+                "reference": "6bccbc471ff2568c2f4ca10d98e55df9dc51be0f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^10.0||^11.0||^12.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.14",
+                "nunomaduro/collision": "^8.1.1||^7.10.0",
+                "orchestra/testbench": "^10.0.0||^9.0.0||^8.22.0",
+                "pestphp/pest": "^3.0",
+                "pestphp/pest-plugin-arch": "^3.0",
+                "pestphp/pest-plugin-laravel": "^3.0",
+                "pestphp/pest-plugin-type-coverage": "^3.5"
+            },
+            "bin": [
+                "bin/lact"
+            ],
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Lact": "Msamgan\\Lact\\Facades\\Lact"
+                    },
+                    "providers": [
+                        "Msamgan\\Lact\\LactServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Msamgan\\Lact\\": "src/",
+                    "Msamgan\\Lact\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "msamgan",
+                    "email": "mohdsamgankhan@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "connecting Js based fronted with laravel backend",
+            "homepage": "https://github.com/msamgan/lact",
+            "keywords": [
+                "lact",
+                "laravel",
+                "msamgan"
+            ],
+            "support": {
+                "issues": "https://github.com/msamgan/lact/issues",
+                "source": "https://github.com/msamgan/lact/tree/v1.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/msamgan",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-04-30T22:00:56+00:00"
         },
         {
             "name": "mustangostang/spyc",
@@ -10576,7 +10654,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2"
+        "php": "^8.3"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"
