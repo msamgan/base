@@ -27,11 +27,9 @@ export default function Index({ auth }) {
     const [pageData, setPageData] = useState(pageObject(null))
     const [loading, setLoading] = useState(true)
     const [permissionsList, setPermissionsList] = useState([])
-
     const getPermissions = () => {
         makeGetCall(services.permissions, setPermissionsList, setLoading)
     }
-
     const getRoles = () => {
         makeGetCall(services.role.list, setRoles, setLoading)
     }

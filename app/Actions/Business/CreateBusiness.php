@@ -12,13 +12,12 @@ final class CreateBusiness
     public function handle(User $user, string $businessName, bool $makeBusinessActive = false): Business
     {
         $business = Business::query()->create([
-            'user_id' => $user->id,
+            'user_id' => $user->getKey(),
             'name' => $businessName,
         ]);
 
         if ($makeBusinessActive) {
-            $user->business_id = $business->id;
-            $user->save();
+            $user->saveKey('business_id', $business->getKey());
         }
 
         return $business;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Concerns\ModelFunctions;
 use App\Enums\RoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\CausesActivity;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -20,12 +22,15 @@ use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @method static create(array $array)
+ *
+ * @property int business_id
  */
 final class User extends Authenticatable
 {
     use CausesActivity, LogsActivity;
     use HasFactory, Notifiable;
     use HasRoles;
+    use ModelFunctions;
     use Notifiable;
 
     /**
@@ -39,6 +44,7 @@ final class User extends Authenticatable
         'password',
         'role_id',
         'business_id',
+        'email_verified_at',
     ];
 
     /**
@@ -88,6 +94,11 @@ final class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class, 'role_id')->select(['id', 'name', 'display_name']);
+    }
+
+    public function businessId(): int
+    {
+        return Auth::businessId();
     }
 
     /**
