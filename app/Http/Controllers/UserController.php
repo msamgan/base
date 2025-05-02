@@ -34,7 +34,7 @@ final class UserController extends Controller
      * @throws Exception
      * @throws Throwable
      */
-    #[Action(method: 'post', middleware: ['auth', 'check_has_business'])]
+    #[Action(method: 'post', middleware: ['auth', 'check_has_business', 'can:user.create'])]
     public function store(StoreUserRequest $request, AssignRole $assignRole, NotifyUser $notifyUser): void
     {
         DB::beginTransaction();
@@ -60,7 +60,7 @@ final class UserController extends Controller
         }
     }
 
-    #[Action(params: ['user'], middleware: ['auth', 'check_has_business'])]
+    #[Action(params: ['user'], middleware: ['auth', 'check_has_business', 'can:user.update'])]
     public function show(User $user): User
     {
         Access::businessCheck(businessId: $user->business_id);
@@ -68,7 +68,7 @@ final class UserController extends Controller
         return $user->load('role');
     }
 
-    #[Action(method: 'post', params: ['user'], middleware: ['auth', 'check_has_business'])]
+    #[Action(method: 'post', params: ['user'], middleware: ['auth', 'check_has_business', 'can:user.update'])]
     public function update(UpdateUserRequest $request, User $user, AssignRole $assignRole, NotifyUser $notifyUser): void
     {
         if ($request->get('password')) {
@@ -89,7 +89,7 @@ final class UserController extends Controller
         $notifyUser->handle(new UserUpdated(auth()->user(), $user));
     }
 
-    #[Action(method: 'delete', params: ['user'], middleware: ['auth', 'check_has_business'])]
+    #[Action(method: 'delete', params: ['user'], middleware: ['auth', 'check_has_business', 'can:user.delete'])]
     public function destroy(DeleteUserRequest $request, User $user, NotifyUser $notifyUser): void
     {
         $notifyUser->handle(new UserDeleted(auth()->user(), $user));
@@ -97,7 +97,7 @@ final class UserController extends Controller
         $user->delete();
     }
 
-    #[Action(middleware: ['auth', 'check_has_business'])]
+    #[Action(middleware: ['auth', 'check_has_business', 'can:user.list'])]
     public function users(): Collection
     {
         return User::query()->where('business_id', auth()->user()->business_id)

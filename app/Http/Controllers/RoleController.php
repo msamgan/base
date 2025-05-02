@@ -32,7 +32,7 @@ final class RoleController extends Controller
     /**
      * @throws Throwable
      */
-    #[Action(method: 'post', middleware: ['auth', 'check_has_business'])]
+    #[Action(method: 'post', middleware: ['auth', 'check_has_business', 'can:role.create'])]
     public function store(StoreRoleRequest $request, CreateRole $createRole, NotifyUser $notifyUser): void
     {
         DB::beginTransaction();
@@ -49,7 +49,7 @@ final class RoleController extends Controller
         }
     }
 
-    #[Action(params: ['role'], middleware: ['auth', 'check_has_business'])]
+    #[Action(params: ['role'], middleware: ['auth', 'check_has_business', 'can:role.update'])]
     public function show(Role $role): Role
     {
         Access::businessCheck(businessId: $role->key('business_id'));
@@ -60,7 +60,7 @@ final class RoleController extends Controller
     /**
      * @throws Throwable
      */
-    #[Action(method: 'post', params: ['role'], middleware: ['auth', 'check_has_business'])]
+    #[Action(method: 'post', params: ['role'], middleware: ['auth', 'check_has_business', 'can:role.update'])]
     public function update(UpdateRoleRequest $request, Role $role, UpdateRole $updateRole, NotifyUser $notifyUser): void
     {
         DB::beginTransaction();
@@ -77,7 +77,7 @@ final class RoleController extends Controller
         }
     }
 
-    #[Action(method: 'delete', params: ['role'], middleware: ['auth', 'check_has_business'])]
+    #[Action(method: 'delete', params: ['role'], middleware: ['auth', 'check_has_business', 'can:role.delete'])]
     public function destroy(DeleteRoleRequest $request, Role $role, NotifyUser $notifyUser): void
     {
         $notifyUser->handle(new RoleDeleted($request->user(), $role));
@@ -85,7 +85,7 @@ final class RoleController extends Controller
         $role->delete();
     }
 
-    #[Action(middleware: ['auth', 'check_has_business'])]
+    #[Action(middleware: ['auth', 'check_has_business', 'can:role.list'])]
     public function roles(): Collection
     {
         return Role::query()->where('business_id', auth()->user()->business_id)

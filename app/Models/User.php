@@ -24,6 +24,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static create(array $array)
  *
  * @property int business_id
+ * @property $unreadNotifications
  */
 final class User extends Authenticatable
 {
