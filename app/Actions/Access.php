@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
-class Access
+final class Access
 {
     public static function businessCheck(?int $businessId): bool
     {
-        if (auth()->user()->business_id !== $businessId) {
-            abort(403, 'You do not have access');
-        }
+        abort_if(auth()->user()->business_id !== $businessId, 403, 'You do not have access');
 
         return true;
     }

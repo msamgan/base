@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Actions\Access;
@@ -19,7 +21,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Throwable;
 
-class RoleController extends Controller
+final class RoleController extends Controller
 {
     public function index(): Response
     {

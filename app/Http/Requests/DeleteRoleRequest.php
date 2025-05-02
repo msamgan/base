@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Enums\PermissionEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeleteRoleRequest extends FormRequest
+final class DeleteRoleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,11 +19,7 @@ class DeleteRoleRequest extends FormRequest
             return false;
         }
 
-        if ($this->user()->business_id !== $this->role->business_id) {
-            return false;
-        }
-
-        return true;
+        return $this->user()->business_id === $this->role->business_id;
     }
 
     /**

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Inertia\Response;
 
-class NotificationController extends Controller
+final class NotificationController extends Controller
 {
     public function index(): Response
     {

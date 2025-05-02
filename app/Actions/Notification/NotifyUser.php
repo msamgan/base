@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Notification;
 
-class NotifyUser
+final class NotifyUser
 {
     public function handle($instance): void
     {

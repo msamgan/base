@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Menu;
 
 use App\Models\Menu;
 
-class CreateMenu
+final class CreateMenu
 {
     public function handle(
         string $label,
@@ -15,7 +17,7 @@ class CreateMenu
         ?bool $isActive = true,
         ?string $parent = null
     ): Menu {
-        return Menu::create([
+        return Menu::query()->create([
             'parent_id' => $parent,
             'label' => $label,
             'route' => $route,

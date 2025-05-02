@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @method static create(array $array)
  */
-class Menu extends Model
+final class Menu extends Model
 {
     use HasFactory;
 
@@ -31,6 +33,6 @@ class Menu extends Model
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(Menu::class, 'parent_id');
+        return $this->belongsTo(self::class, 'parent_id');
     }
 }

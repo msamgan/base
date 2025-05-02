@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMenuRequest;
@@ -7,7 +9,7 @@ use App\Http\Requests\UpdateMenuRequest;
 use App\Models\Menu;
 use Illuminate\Database\Eloquent\Collection;
 
-class MenuController extends Controller
+final class MenuController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +27,7 @@ class MenuController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): void
     {
         //
     }
@@ -33,7 +35,7 @@ class MenuController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMenuRequest $request)
+    public function store(StoreMenuRequest $request): void
     {
         //
     }
@@ -41,7 +43,7 @@ class MenuController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Menu $menu)
+    public function show(Menu $menu): void
     {
         //
     }
@@ -49,7 +51,7 @@ class MenuController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Menu $menu)
+    public function edit(Menu $menu): void
     {
         //
     }
@@ -57,7 +59,7 @@ class MenuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMenuRequest $request, Menu $menu)
+    public function update(UpdateMenuRequest $request, Menu $menu): void
     {
         //
     }
@@ -65,7 +67,7 @@ class MenuController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Menu $menu)
+    public function destroy(Menu $menu): void
     {
         //
     }

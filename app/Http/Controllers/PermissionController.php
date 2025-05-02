@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\HigherOrderCollectionProxy;
 use Spatie\Permission\Models\Permission;
 
-class PermissionController extends Controller
+final class PermissionController extends Controller
 {
     private array $excludedModules = ['business'];
 
     public function permissions(): Collection|HigherOrderCollectionProxy
     {
         $filteredPermissions = [];
-        Permission::query()->get()->each(function ($permission) use (&$filteredPermissions) {
-            [$module, $action] = explode('.', $permission->name);
+        Permission::query()->get()->each(function ($permission) use (&$filteredPermissions): void {
+            [$module, $action] = explode('.', (string) $permission->name);
 
             if (in_array($module, $this->excludedModules)) {
                 return;

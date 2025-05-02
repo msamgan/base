@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Permission;
 
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class AssignPermissionToRole
+final class AssignPermissionToRole
 {
     public function handle(Role $role, string $permission, string $module): void
     {
-        $permissionName = $module . '.' . $permission;
+        $permissionName = $module.'.'.$permission;
 
         $permissionExists = Permission::query()->where('name', $permissionName)->exists();
         if (! $permissionExists) {

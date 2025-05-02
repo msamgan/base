@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Enums\PermissionEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserRequest extends FormRequest
+final class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,11 +19,7 @@ class UpdateUserRequest extends FormRequest
             return false;
         }
 
-        if ($this->user()->business_id !== $this->user->business_id) {
-            return false;
-        }
-
-        return true;
+        return $this->user()->business_id === $this->user->business_id;
     }
 
     /**
@@ -33,7 +31,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $this->user->id],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$this->user->id],
             'role' => ['required', 'integer', 'exists:roles,id'],
         ];
     }
