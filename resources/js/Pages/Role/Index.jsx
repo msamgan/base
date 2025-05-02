@@ -12,9 +12,9 @@ import Name from '@/Components/helpers/Name.jsx'
 import ActiveBadge from '@/Components/helpers/ActiveBadge.jsx'
 import Actions from '@/Components/helpers/Actions.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
-import { services } from '@/Utils/services/index.js'
 import { permissions } from '@/Utils/permissions/index.js'
 import { destroy, roles as rcRoles, show } from '@actions/RoleController.js'
+import { permissions as pcPermissions } from '@actions/PermissionController.js'
 
 export default function Index({ auth }) {
     let hasListPermission = hasPermission(auth.user, permissions.role.list)
@@ -26,12 +26,10 @@ export default function Index({ auth }) {
     const [role, setRole] = useState(null)
     const [data, setData] = useState([])
     const [pageData, setPageData] = useState(pageObject(null))
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [permissionsList, setPermissionsList] = useState([])
 
-    const getPermissions = () => {
-        makeGetCall(services.permissions, setPermissionsList, setLoading)
-    }
+    const getPermissions = async () => setPermissionsList(await pcPermissions.data({}))
 
     const getRoles = async () => setRoles(await rcRoles.data({}))
 
@@ -74,7 +72,7 @@ export default function Index({ auth }) {
             getRoles().then()
         }
 
-        getPermissions()
+        getPermissions().then()
     }, [])
 
     useEffect(() => setData(roles.map((role) => processRole(role))), [roles])
