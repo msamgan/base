@@ -6,10 +6,11 @@ namespace App\Actions\Role;
 
 use App\Models\Role;
 use Illuminate\Support\Str;
+use Illuminate\Support\Stringable;
 
 final class CreateRole
 {
-    public static function processRoleName(string $name): string
+    public static function processRoleName(string $name): Stringable
     {
         return Str::of($name)->trim()->title();
     }
@@ -20,7 +21,7 @@ final class CreateRole
 
         $roleExists = Role::query()
             ->where('display_name', $name)
-            ->where('business_id', auth()->user()->business_id ?? null)
+            ->where('business_id', auth()->user()->key('business_id') ?? null)
             ->first();
 
         if ($roleExists) {
@@ -31,7 +32,7 @@ final class CreateRole
             'name' => Str::uuid(),
             'display_name' => $name,
             'guard_name' => 'web',
-            'business_id' => auth()->user()->business_id ?? null,
+            'business_id' => auth()->user()->key('business_id') ?? null,
             'created_by' => auth()->id() ?? null,
         ]);
     }

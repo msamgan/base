@@ -14,6 +14,7 @@ import Actions from '@/Components/helpers/Actions.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
 import { services } from '@/Utils/services/index.js'
 import { permissions } from '@/Utils/permissions/index.js'
+import { destroy, roles as rcRoles, show } from '@actions/RoleController.js'
 
 export default function Index({ auth }) {
     let hasListPermission = hasPermission(auth.user, permissions.role.list)
@@ -22,21 +23,19 @@ export default function Index({ auth }) {
     let hasDeletePermission = hasPermission(auth.user, permissions.role.delete)
 
     const [roles, setRoles] = useState([])
-    const [data, setData] = useState([])
     const [role, setRole] = useState(null)
+    const [data, setData] = useState([])
     const [pageData, setPageData] = useState(pageObject(null))
     const [loading, setLoading] = useState(true)
     const [permissionsList, setPermissionsList] = useState([])
+
     const getPermissions = () => {
         makeGetCall(services.permissions, setPermissionsList, setLoading)
     }
-    const getRoles = () => {
-        makeGetCall(services.role.list, setRoles, setLoading)
-    }
 
-    const getRole = (id) => {
-        makeGetCall(services.role.show(id), setRole, setLoading)
-    }
+    const getRoles = async () => setRoles(await rcRoles.data({}))
+
+    const getRole = async (id) => setRole(await show.data({ params: { role: id } }))
 
     const processRole = (role) => {
         return {
@@ -48,9 +47,7 @@ export default function Index({ auth }) {
                     edit={
                         hasUpdatePermission ? (
                             <OffCanvasButton
-                                onClick={() => {
-                                    getRole(role.id)
-                                }}
+                                onClick={() => getRole(role.id).then()}
                                 className={'dropdown-item'}
                                 id="roleFormCanvas"
                             >
@@ -61,7 +58,7 @@ export default function Index({ auth }) {
                     deleteAction={
                         hasDeletePermission ? (
                             <DeleteEntityForm
-                                action={route('service.role.destroy', role.id)}
+                                action={destroy.route({ role: role.id })}
                                 refresh={getRoles}
                                 className={'dropdown-item'}
                             />
@@ -74,26 +71,22 @@ export default function Index({ auth }) {
 
     useEffect(() => {
         if (hasListPermission) {
-            getRoles()
+            getRoles().then()
         }
 
         getPermissions()
     }, [])
 
-    useEffect(() => {
-        setData(roles.map((role) => processRole(role)))
-    }, [roles])
+    useEffect(() => setData(roles.map((role) => processRole(role))), [roles])
 
-    useEffect(() => {
-        setPageData(pageObject(role))
-    }, [role])
+    useEffect(() => setPageData(pageObject(role)), [role])
 
     return (
         <Master user={auth.user}>
             <Head title="Roles" />
 
             <PageHeader
-                title={'Business Roles List'}
+                title={'Roles'}
                 subtitle={'Find all of your business’s roles and there associated permissions.'}
                 action={
                     hasCreatePermission && (

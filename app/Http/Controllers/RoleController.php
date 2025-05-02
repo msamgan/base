@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Msamgan\Lact\Attributes\Action;
 use Throwable;
 
 final class RoleController extends Controller
@@ -31,6 +32,7 @@ final class RoleController extends Controller
     /**
      * @throws Throwable
      */
+    #[Action(method: 'post', middleware: ['auth', 'check_has_business'])]
     public function store(StoreRoleRequest $request, CreateRole $createRole, NotifyUser $notifyUser): void
     {
         DB::beginTransaction();
@@ -47,9 +49,10 @@ final class RoleController extends Controller
         }
     }
 
+    #[Action(params: ['role'], middleware: ['auth', 'check_has_business'])]
     public function show(Role $role): Role
     {
-        Access::businessCheck(businessId: $role->business_id);
+        Access::businessCheck(businessId: $role->key('business_id'));
 
         return $role->load('permissions');
     }
@@ -57,6 +60,7 @@ final class RoleController extends Controller
     /**
      * @throws Throwable
      */
+    #[Action(method: 'post', params: ['role'], middleware: ['auth', 'check_has_business'])]
     public function update(UpdateRoleRequest $request, Role $role, UpdateRole $updateRole, NotifyUser $notifyUser): void
     {
         DB::beginTransaction();
@@ -73,6 +77,7 @@ final class RoleController extends Controller
         }
     }
 
+    #[Action(method: 'delete', params: ['role'], middleware: ['auth', 'check_has_business'])]
     public function destroy(DeleteRoleRequest $request, Role $role, NotifyUser $notifyUser): void
     {
         $notifyUser->handle(new RoleDeleted($request->user(), $role));
@@ -80,6 +85,7 @@ final class RoleController extends Controller
         $role->delete();
     }
 
+    #[Action(middleware: ['auth', 'check_has_business'])]
     public function roles(): Collection
     {
         return Role::query()->where('business_id', auth()->user()->business_id)

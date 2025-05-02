@@ -1,4 +1,5 @@
 export const columns = ['Name', 'Users Count', 'Status', 'Actions']
+
 export const dataObject = (role) => {
     return {
         name: role ? role.display_name : '',

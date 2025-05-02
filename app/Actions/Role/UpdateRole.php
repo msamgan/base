@@ -12,10 +12,8 @@ final class UpdateRole
     {
         $name = CreateRole::processRoleName($name);
 
-        $role->update([
-            'display_name' => $name,
-        ]);
+        $role->update(['display_name' => $name]);
 
-        return $role;
+        return $role->refresh();
     }
 }
