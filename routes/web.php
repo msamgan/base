@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -11,5 +13,5 @@ Route::get('dashboard', function () {
 
 $moduleRoutesDir = 'routes/modules/';
 foreach (File::allFiles(base_path($moduleRoutesDir)) as $file) {
-    require base_path($moduleRoutesDir) . $file->getFilename();
+    require base_path($moduleRoutesDir).$file->getFilename();
 }

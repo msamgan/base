@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Actions\Business\UpdateBusiness;
@@ -9,7 +11,7 @@ use App\Models\Business;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class BusinessController extends Controller
+final class BusinessController extends Controller
 {
     /**
      * Display a listing of the resource.

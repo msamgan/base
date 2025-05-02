@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications;
 
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class LoggedOut extends Notification
+final class LoggedOut extends Notification
 {
     // use Queueable;
 
@@ -49,7 +51,7 @@ class LoggedOut extends Notification
 
         return [
             'title' => 'Logged Out',
-            'message' => 'You have been logged out on ' . $dataTime . '.',
+            'message' => 'You have been logged out on '.$dataTime.'.',
         ];
     }
 }

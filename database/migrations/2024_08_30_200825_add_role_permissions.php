@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Actions\Permission\AssignPermissionToRole;
 use App\Enums\RoleEnum;
 use App\Models\Role;

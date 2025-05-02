@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications;
 
 use App\Models\User;
@@ -9,7 +11,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Spatie\Permission\Models\Role;
 
-class RoleUpdated extends Notification implements ShouldQueue
+final class RoleUpdated extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -56,7 +58,7 @@ class RoleUpdated extends Notification implements ShouldQueue
     {
         return [
             'title' => 'Role Updated',
-            'message' => $this->user->name . ' updated the role "' . $this->role->display_name . '" on ' . now()->format('F j, Y, g:i a'),
+            'message' => $this->user->name.' updated the role "'.$this->role->display_name.'" on '.now()->format('F j, Y, g:i a'),
         ];
     }
 }

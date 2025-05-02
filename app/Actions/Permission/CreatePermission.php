@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Permission;
 
 use App\Enums\RoleEnum;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class CreatePermission
+final class CreatePermission
 {
     public function handle(string $permission, string $module): void
     {
-        $permissionName = $module . '.' . $permission;
+        $permissionName = $module.'.'.$permission;
 
         Permission::create(['name' => $permissionName]);
 

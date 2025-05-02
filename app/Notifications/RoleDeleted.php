@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications;
 
 use App\Models\User;
@@ -7,7 +9,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Spatie\Permission\Models\Role;
 
-class RoleDeleted extends Notification
+final class RoleDeleted extends Notification
 {
     // use Queueable;
 
@@ -54,7 +56,7 @@ class RoleDeleted extends Notification
     {
         return [
             'title' => 'Role Deleted',
-            'message' => $this->user->name . ' deleted the role "' . $this->role->display_name . '" on ' . now()->format('F j, Y, g:i a'),
+            'message' => $this->user->name.' deleted the role "'.$this->role->display_name.'" on '.now()->format('F j, Y, g:i a'),
         ];
     }
 }

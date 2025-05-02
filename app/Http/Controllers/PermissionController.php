@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\HigherOrderCollectionProxy;
 use Spatie\Permission\Models\Permission;
 
-class PermissionController extends Controller
+final class PermissionController extends Controller
 {
     private array $excludedModules = ['business'];
 

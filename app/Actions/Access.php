@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
-class Access
+final class Access
 {
     public static function businessCheck(?int $businessId): bool
     {

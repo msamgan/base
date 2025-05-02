@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Role;
 
 use App\Models\Role;
 use Illuminate\Support\Str;
 
-class CreateRole
+final class CreateRole
 {
     public static function processRoleName(string $name): string
     {

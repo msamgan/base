@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Enums\PermissionEnum;
 use App\Http\Controllers\BusinessController;
 use Illuminate\Support\Facades\Route;

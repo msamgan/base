@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Business;
 
 use App\Enums\RoleEnum;
 use App\Models\User;
 
-class BusinessUser
+final class BusinessUser
 {
     public function handle(): User
     {

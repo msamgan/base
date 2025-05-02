@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Actions\Menu\CreateMenu;
@@ -11,7 +13,7 @@ use Illuminate\Support\Str;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
 
-class MakeModule extends Command
+final class MakeModule extends Command
 {
     /**
      * The name and signature of the console command.
@@ -290,12 +292,12 @@ class MakeModule extends Command
 
         foreach ($fileLines as $key => $line) {
             if ($line === "\n") {
-                $fileLines[$key] = $permissionImport . "\n";
+                $fileLines[$key] = $permissionImport."\n";
                 array_splice($fileLines, $key + 1, 0, "\n");
             }
         }
 
-        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement . "\n");
+        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement."\n");
 
         file_put_contents(resource_path('js/Utils/permissions/index.js'), implode('', $fileLines));
 
@@ -319,7 +321,7 @@ class MakeModule extends Command
                 array_splice($permissionEnumFile, $key + 1, 0, $newPermission);
             }
 
-            if (str_ends_with(trim($line), '};')) {
+            if (str_ends_with(mb_trim($line), '};')) {
                 array_splice($permissionEnumFile, $key + 1, 0, $newPermissionCan);
             }
         }
@@ -345,12 +347,12 @@ class MakeModule extends Command
 
         foreach ($fileLines as $key => $line) {
             if ($line === "\n") {
-                $fileLines[$key] = $serviceImport . "\n";
+                $fileLines[$key] = $serviceImport."\n";
                 array_splice($fileLines, $key + 1, 0, "\n");
             }
         }
 
-        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement . "\n");
+        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement."\n");
 
         file_put_contents(resource_path('js/Utils/services/index.js'), implode('', $fileLines));
     }
@@ -371,12 +373,12 @@ class MakeModule extends Command
 
         foreach ($fileLines as $key => $line) {
             if ($line === "\n") {
-                $fileLines[$key] = $routeImport . "\n";
+                $fileLines[$key] = $routeImport."\n";
                 array_splice($fileLines, $key + 1, 0, "\n");
             }
         }
 
-        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement . "\n");
+        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement."\n");
 
         file_put_contents(resource_path('js/Utils/routes/index.js'), implode('', $fileLines));
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications;
 
 use App\Models\User;
@@ -8,7 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class UserUpdated extends Notification implements ShouldQueue
+final class UserUpdated extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -55,7 +57,7 @@ class UserUpdated extends Notification implements ShouldQueue
     {
         return [
             'title' => 'User Updated',
-            'message' => $this->user->name . ' has updated ' . $this->newUser->name . '.',
+            'message' => $this->user->name.' has updated '.$this->newUser->name.'.',
         ];
     }
 }

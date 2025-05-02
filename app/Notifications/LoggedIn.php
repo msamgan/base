@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications;
 
 use Browser;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class LoggedIn extends Notification
+final class LoggedIn extends Notification
 {
     // use Queueable;
 
@@ -50,7 +52,7 @@ class LoggedIn extends Notification
         $browser = Browser::browserName();
         $device = Browser::deviceType();
 
-        $message = 'You have been logged in on ' . $dataTime . '. With a ' . $device . '. Using ' . $browser . '.';
+        $message = 'You have been logged in on '.$dataTime.'. With a '.$device.'. Using '.$browser.'.';
 
         return [
             'title' => 'Logged In',

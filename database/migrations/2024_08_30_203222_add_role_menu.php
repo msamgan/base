@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Actions\Menu\CreateMenu;
 use App\Enums\PermissionEnum;
 use Illuminate\Database\Migrations\Migration;

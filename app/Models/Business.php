@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +13,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 /**
  * @method static create(array $array)
  */
-class Business extends Model
+final class Business extends Model
 {
     use HasFactory;
     use LogsActivity;

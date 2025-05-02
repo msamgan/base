@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Menu;
 
 use App\Models\Menu;
 
-class CreateMenu
+final class CreateMenu
 {
     public function handle(
         string $label,

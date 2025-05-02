@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMenuRequest;
@@ -7,7 +9,7 @@ use App\Http\Requests\UpdateMenuRequest;
 use App\Models\Menu;
 use Illuminate\Database\Eloquent\Collection;
 
-class MenuController extends Controller
+final class MenuController extends Controller
 {
     /**
      * Display a listing of the resource.

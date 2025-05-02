@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Business;
 
 use App\Models\Business;
 use App\Models\User;
 
-class CreateBusiness
+final class CreateBusiness
 {
     public function handle(User $user, string $businessName, bool $makeBusinessActive = false): Business
     {

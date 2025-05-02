@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Actions\Business\CreateBusiness;
@@ -18,7 +20,7 @@ use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class RegisteredUserController extends Controller
+final class RegisteredUserController extends Controller
 {
     /**
      * Handle an incoming registration request.
@@ -32,7 +34,7 @@ class RegisteredUserController extends Controller
     ): RedirectResponse {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', $this->getPasswordDefaults()],
             'business_name' => ['required', 'string', 'max:255'],
         ]);
