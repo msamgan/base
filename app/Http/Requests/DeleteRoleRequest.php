@@ -19,11 +19,7 @@ final class DeleteRoleRequest extends FormRequest
             return false;
         }
 
-        if ($this->user()->business_id !== $this->role->business_id) {
-            return false;
-        }
-
-        return true;
+        return $this->user()->business_id === $this->role->business_id;
     }
 
     /**

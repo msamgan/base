@@ -19,11 +19,7 @@ final class UpdateBusinessRequest extends FormRequest
             return false;
         }
 
-        if ($this->user()->business_id !== $this->business->id) {
-            return false;
-        }
-
-        return true;
+        return $this->user()->business_id === $this->business->id;
     }
 
     /**

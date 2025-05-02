@@ -13,7 +13,7 @@ final class BusinessUser
     {
         return User::query()
             ->where('business_id', auth()->user()->business_id)
-            ->whereHas('role', function ($query) {
+            ->whereHas('role', function ($query): void {
                 $query->where('display_name', RoleEnum::Business->value);
             })
             ->first();

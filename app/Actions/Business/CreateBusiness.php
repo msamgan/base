@@ -11,7 +11,7 @@ final class CreateBusiness
 {
     public function handle(User $user, string $businessName, bool $makeBusinessActive = false): Business
     {
-        $business = Business::create([
+        $business = Business::query()->create([
             'user_id' => $user->id,
             'name' => $businessName,
         ]);

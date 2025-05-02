@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Override;
 
 final class HandleInertiaRequests extends Middleware
 {
@@ -19,6 +20,7 @@ final class HandleInertiaRequests extends Middleware
     /**
      * Determine the current asset version.
      */
+    #[Override]
     public function version(Request $request): ?string
     {
         return parent::version($request);
@@ -29,6 +31,7 @@ final class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
+    #[Override]
     public function share(Request $request): array
     {
         $user = $request->user()

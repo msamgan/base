@@ -14,18 +14,10 @@ final class UserUpdated extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private User $user;
-
-    private User $newUser;
-
     /**
      * Create a new notification instance.
      */
-    public function __construct(User $user, User $newUser)
-    {
-        $this->user = $user;
-        $this->newUser = $newUser;
-    }
+    public function __construct(private User $user, private User $newUser) {}
 
     /**
      * Get the notification's delivery channels.
