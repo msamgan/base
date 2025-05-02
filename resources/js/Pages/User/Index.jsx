@@ -1,6 +1,6 @@
 import Master from '@/Layouts/Master.jsx'
 import { Head } from '@inertiajs/react'
-import { hasPermission, makeGetCall } from '@/Utils/methods.js'
+import { hasPermission } from '@/Utils/methods.js'
 import { permissions } from '@/Utils/permissions/index.js'
 import { useEffect, useState } from 'react'
 import Actions from '@/Components/helpers/Actions.jsx'
@@ -14,7 +14,7 @@ import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Form from '@/Pages/User/Partials/Form.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
 import { roles as rcRoles } from '@actions/RoleController.js'
-import { users as ucUsers, show, destroy } from '@actions/UserController.js'
+import { destroy, show, users as ucUsers } from '@actions/UserController.js'
 
 export default function Index({ auth }) {
     let hasListPermission = hasPermission(auth.user, permissions.user.list)
