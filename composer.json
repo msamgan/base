@@ -5,7 +5,7 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "driftingly/rector-laravel": "^2.0",
         "hisorange/browser-detect": "^5.0",
         "inertiajs/inertia-laravel": "^2.0",
