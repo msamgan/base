@@ -13,7 +13,8 @@ import PageHeader from '@/Components/PageHeader.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Form from '@/Pages/User/Partials/Form.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
-import { services } from '@/Utils/services/index.js'
+import { roles as rcRoles } from '@actions/RoleController.js'
+import { users as ucUsers, show, destroy } from '@actions/UserController.js'
 
 export default function Index({ auth }) {
     let hasListPermission = hasPermission(auth.user, permissions.user.list)
@@ -24,21 +25,15 @@ export default function Index({ auth }) {
     const [users, setUsers] = useState([])
     const [data, setData] = useState([])
     const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [pageData, setPageData] = useState(pageObject(null))
     const [roles, setRoles] = useState([])
 
-    const getUsers = () => {
-        makeGetCall(services.user.list, setUsers, setLoading)
-    }
+    const getUsers = async () => setUsers(await ucUsers.data({}))
 
-    const getRoles = () => {
-        makeGetCall(services.role.list, setRoles, setLoading)
-    }
+    const getRoles = async () => setRoles(await rcRoles.data({}))
 
-    const getUser = (id) => {
-        makeGetCall(services.user.show(id), setUser, setLoading)
-    }
+    const getUser = async (id) => setUser(await show.data({ params: { user: id } }))
 
     const processUser = (user) => {
         return {
@@ -51,7 +46,7 @@ export default function Index({ auth }) {
                         hasUpdatePermission ? (
                             <OffCanvasButton
                                 onClick={() => {
-                                    getUser(user.id)
+                                    getUser(user.id).then()
                                     setPageData(pageObject(user))
                                 }}
                                 className={'dropdown-item'}
@@ -64,7 +59,7 @@ export default function Index({ auth }) {
                     deleteAction={
                         hasDeletePermission ? (
                             <DeleteEntityForm
-                                action={route('service.user.destroy', user.id)}
+                                action={destroy.route({ user: user.id })}
                                 refresh={getUsers}
                                 className={'dropdown-item'}
                             />
@@ -77,10 +72,10 @@ export default function Index({ auth }) {
 
     useEffect(() => {
         if (hasListPermission) {
-            getUsers()
+            getUsers().then()
         }
 
-        getRoles()
+        getRoles().then()
     }, [])
 
     useEffect(() => {
@@ -92,7 +87,7 @@ export default function Index({ auth }) {
             <Head title="Users" />
 
             <PageHeader
-                title={'Business User List'}
+                title={'Users'}
                 subtitle={'Find all of your business’s users and there associated details.'}
                 action={
                     hasCreatePermission && (
