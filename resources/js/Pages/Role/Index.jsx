@@ -5,7 +5,7 @@ import { hasPermission, makeGetCall } from '@/Utils/methods.js'
 import OffCanvasButton from '@/Components/off_canvas/OffCanvasButton.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Table from '@/Components/layout/Table.jsx'
-import { columns, pageObject } from '@/Pages/Role/helper.js'
+import { pageObject } from '@/Pages/Role/helper.js'
 import Form from '@/Pages/Role/Partials/Form.jsx'
 import { useEffect, useState } from 'react'
 import Name from '@/Components/helpers/Name.jsx'
@@ -111,7 +111,7 @@ export default function Index({ auth }) {
             )}
 
             <div className="col-12">
-                <Table columns={columns} data={data} loading={loading} permission={hasListPermission} />
+                <Table data={data} loading={loading} permission={hasListPermission} />
             </div>
         </Master>
     )

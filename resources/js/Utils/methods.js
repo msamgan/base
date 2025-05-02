@@ -43,3 +43,14 @@ export const makeGetCall = (url, setState, setLoading) => {
             setLoading(false)
         })
 }
+
+export const toTitleCase = (str) => {
+    return str
+        .replace(/([A-Z])/g, ' $1')
+        .trim()
+        .split(' ')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+}
+
+

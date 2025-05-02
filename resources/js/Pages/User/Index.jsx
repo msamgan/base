@@ -8,7 +8,7 @@ import Name from '@/Components/helpers/Name.jsx'
 import ActiveBadge from '@/Components/helpers/ActiveBadge.jsx'
 import OffCanvasButton from '@/Components/off_canvas/OffCanvasButton.jsx'
 import Table from '@/Components/layout/Table.jsx'
-import { columns, pageObject } from '@/Pages/User/helper.js'
+import { pageObject } from '@/Pages/User/helper.js'
 import PageHeader from '@/Components/PageHeader.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Form from '@/Pages/User/Partials/Form.jsx'
@@ -112,7 +112,7 @@ export default function Index({ auth }) {
             )}
 
             <div className="col-12">
-                <Table columns={columns} data={data} loading={loading} permission={hasListPermission} />
+                <Table data={data} loading={loading} permission={hasListPermission} />
             </div>
         </Master>
     )
