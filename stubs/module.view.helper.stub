@@ -6,6 +6,6 @@ export const dataObject = ({camelCase}) => {
 
 export const pageObject = ({camelCase}) => {
     return {
-        title: {camelCase} ? 'Edit {classCase}' : 'Create {classCase}',
+        title: {camelCase} ? 'Edit {titleCase}' : 'Create {titleCase}',
     }
 }

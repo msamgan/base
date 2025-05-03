@@ -14,6 +14,7 @@ final class Caseify
             'classCase' => Str::studly($text),
             'camelCase' => Str::camel($text),
             'underscoreCase' => Str::snake($text),
+            'titleCase' => Str::title($text),
             'camelCasePlural' => Str::camel(Str::plural($text)),
             'underscoreCasePlural' => Str::snake(Str::plural($text)),
             'classCasePlural' => Str::studly(Str::plural($text)),

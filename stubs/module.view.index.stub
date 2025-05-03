@@ -13,7 +13,7 @@ import PageHeader from '@/Components/PageHeader.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Form from '@/Pages/{classCase}/Partials/Form.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
-import { destroy, {camelCasePlural} as _{camelCasePlural}, show } from '@actions/RoleController.js'
+import { destroy, {camelCasePlural} as _{camelCasePlural}, show } from '@actions/{classCase}Controller.js'
 import usePermissions from '@/Hooks/usePermissions'
 
 export default function Index({ auth }) {
@@ -38,7 +38,7 @@ export default function Index({ auth }) {
                         can(permissions.{underscoreCase}.update) ? (
                             <OffCanvasButton
                                 onClick={() => {
-                                    get{classCase}({camelCase}.id)
+                                    get{classCase}({camelCase}.id).then()
                                     setPageData(pageObject({camelCase}))
                                 }}
                                 className={'dropdown-item'}
@@ -51,7 +51,7 @@ export default function Index({ auth }) {
                     deleteAction={
                         can(permissions.{underscoreCase}.delete) ? (
                             <DeleteEntityForm
-                                action={destroy.route({ {camelCase}: {camelCase}.id }) route('service.{underscoreCase}.destroy', )}
+                                action={destroy.route({ {camelCase}: {camelCase}.id })}
                                 refresh={get{classCasePlural}}
                                 className={'dropdown-item'}
                             />
@@ -64,13 +64,13 @@ export default function Index({ auth }) {
 
     useEffect(() => {
         if (can(permissions.{underscoreCase}.list)) {
-            get{classCasePlural}()
+            get{classCasePlural}().then()
         }
     }, [])
 
     useEffect(() => {
-        setData({camelCasePlural}.map(({underscoreCase}) => process{classCase}({underscoreCase})))
-    }, [{underscoreCasePlural}])
+        setData({camelCasePlural}.map(({camelCase}) => process{classCase}({camelCase})))
+    }, [{camelCasePlural}])
 
     return (
         <Master user={auth.user} header={'{classCasePlural}'}>
@@ -97,7 +97,7 @@ export default function Index({ auth }) {
 
             {can(permissions.{underscoreCase}.create) && (
                 <OffCanvas id="{camelCase}FormCanvas" title={pageData.title}>
-                    <Form get{classCasePlural}={get{classCasePlural}} {underscoreCase}={{underscoreCase}} />
+                    <Form get{classCasePlural}={get{classCasePlural}} {camelCase}={{camelCase}} />
                 </OffCanvas>
             )}
 

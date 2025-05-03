@@ -7,7 +7,7 @@ import { dataObject } from '@/Pages/{classCase}/helper.js'
 import { useEffect, useState } from 'react'
 import { store, update } from '@actions/{classCase}Controller.js'
 
-export default function Form({ get{classCasePlural}, {underscoreCase} = null}) {
+export default function Form({ get{classCasePlural}, {camelCase} = null}) {
     const [action, setAction] = useState(store.route())
     const { data, setData, post, errors, processing, recentlySuccessful, reset } = useForm(dataObject(null))
 
