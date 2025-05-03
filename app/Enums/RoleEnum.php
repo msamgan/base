@@ -21,7 +21,7 @@ enum RoleEnum: string
         };
     }
 
-    public function id(): string
+    public function id(): int
     {
         return match ($this) {
             self::SuperAdmin => 1,
