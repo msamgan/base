@@ -8,55 +8,50 @@ import Name from '@/Components/helpers/Name.jsx'
 import ActiveBadge from '@/Components/helpers/ActiveBadge.jsx'
 import OffCanvasButton from '@/Components/off_canvas/OffCanvasButton.jsx'
 import Table from '@/Components/layout/Table.jsx'
-import { columns, pageObject } from '@/Pages/{classCase}/helper.js'
+import { pageObject } from '@/Pages/{classCase}/helper.js'
 import PageHeader from '@/Components/PageHeader.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Form from '@/Pages/{classCase}/Partials/Form.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
+import { destroy, {camelCasePlural} as _{camelCasePlural}, show } from '@actions/RoleController.js'
+import usePermissions from '@/Hooks/usePermissions'
 
 export default function Index({ auth }) {
-    let hasListPermission = hasPermission(auth.user, permissions.{underscoreCase}.list)
-    let hasCreatePermission = hasPermission(auth.user, permissions.{underscoreCase}.create)
-    let hasUpdatePermission = hasPermission(auth.user, permissions.{underscoreCase}.update)
-    let hasDeletePermission = hasPermission(auth.user, permissions.{underscoreCase}.delete)
+    const { can } = usePermissions()
 
-    const [{underscoreCasePlural}, set{classCasePlural}] = useState([])
+    const [{camelCasePlural}, set{classCasePlural}] = useState([])
     const [data, setData] = useState([])
-    const [{underscoreCase}, set{classCase}] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [{camelCase}, set{classCase}] = useState(null)
+    const [loading, setLoading] = useState(false)
     const [pageData, setPageData] = useState(pageObject(null))
 
-    const get{classCasePlural} = () => {
-        makeGetCall(route('service.{underscoreCasePlural}'), set{classCasePlural}, setLoading)
-    }
+    const get{classCasePlural} = async () => set{classCasePlural}(await _{camelCasePlural}.data({}))
 
-    const get{classCase} = (id) => {
-        makeGetCall(route('service.{underscoreCase}.show', id), set{classCase}, setLoading)
-    }
+    const get{classCase} = async (id) => set{classCase}(await show.data({ params: { {camelCase}: id } }))
 
-    const process{classCase} = ({underscoreCase}) => {
+    const process{classCase} = ({camelCase}) => {
         return {
-            Name: <Name value={{underscoreCase}.name} />,
+            Name: <Name value={{camelCase}.name} />,
             Actions: (
                 <Actions
                     edit={
-                        hasUpdatePermission ? (
+                        can(permissions.{camelCase}.update) ? (
                             <OffCanvasButton
                                 onClick={() => {
-                                    get{classCase}({underscoreCase}.id)
-                                    setPageData(pageObject({underscoreCase}))
+                                    get{classCase}({camelCase}.id)
+                                    setPageData(pageObject({camelCase}))
                                 }}
                                 className={'dropdown-item'}
-                                id="{underscoreCase}FormCanvas"
+                                id="{camelCase}FormCanvas"
                             >
                                 <i className="ri-pencil-line me-1 text-primary"></i> Edit
                             </OffCanvasButton>
                         ) : null
                     }
                     deleteAction={
-                        hasDeletePermission ? (
+                        can(permissions.{underscoreCase}.delete) ? (
                             <DeleteEntityForm
-                                action={route('service.{underscoreCase}.destroy', {underscoreCase}.id)}
+                                action={destroy.route({ {camelCase}: {camelCase}.id }) route('service.{underscoreCase}.destroy', )}
                                 refresh={get{classCasePlural}}
                                 className={'dropdown-item'}
                             />
@@ -68,7 +63,7 @@ export default function Index({ auth }) {
     }
 
     useEffect(() => {
-        if (hasListPermission) {
+        if (can(permissions.{underscoreCase}.list)) {
             get{classCasePlural}()
         }
     }, [])
@@ -85,7 +80,7 @@ export default function Index({ auth }) {
                 title={'Business {classCase} List'}
                 subtitle={'Find all of your business’s {underscoreCasePlural} and there associated details.'}
                 action={
-                    hasCreatePermission && (
+                    can(permissions.{underscoreCase}.create) && (
                         <OffCanvasButton
                             onClick={() => {
                                 set{classCase}(null)
@@ -100,14 +95,14 @@ export default function Index({ auth }) {
                 }
             ></PageHeader>
 
-            {hasCreatePermission && (
+            {can(permissions.{underscoreCase}.create) && (
                 <OffCanvas id="{underscoreCase}FormCanvas" title={pageData.title}>
                     <Form get{classCasePlural}={get{classCasePlural}} {underscoreCase}={{underscoreCase}} />
                 </OffCanvas>
             )}
 
             <div className="col-12">
-                <Table columns={columns} data={data} loading={loading} permission={hasListPermission} />
+                <Table data={data} loading={loading} permission={can(permissions.{underscoreCase}.list)} />
             </div>
         </Master>
     )
