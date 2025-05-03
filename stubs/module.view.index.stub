@@ -35,7 +35,7 @@ export default function Index({ auth }) {
             Actions: (
                 <Actions
                     edit={
-                        can(permissions.{camelCase}.update) ? (
+                        can(permissions.{underscoreCase}.update) ? (
                             <OffCanvasButton
                                 onClick={() => {
                                     get{classCase}({camelCase}.id)
@@ -69,7 +69,7 @@ export default function Index({ auth }) {
     }, [])
 
     useEffect(() => {
-        setData({underscoreCasePlural}.map(({underscoreCase}) => process{classCase}({underscoreCase})))
+        setData({camelCasePlural}.map(({underscoreCase}) => process{classCase}({underscoreCase})))
     }, [{underscoreCasePlural}])
 
     return (
@@ -77,8 +77,8 @@ export default function Index({ auth }) {
             <Head title="{classCasePlural}" />
 
             <PageHeader
-                title={'Business {classCase} List'}
-                subtitle={'Find all of your business’s {underscoreCasePlural} and there associated details.'}
+                title={'{classCasePlural}'}
+                subtitle={'Find all of your business’s {classCasePlural} and there associated details.'}
                 action={
                     can(permissions.{underscoreCase}.create) && (
                         <OffCanvasButton
@@ -86,7 +86,7 @@ export default function Index({ auth }) {
                                 set{classCase}(null)
                                 setPageData(pageObject(null))
                             }}
-                            id="{underscoreCase}FormCanvas"
+                            id="{camelCase}FormCanvas"
                         >
                             <i className="ri-add-line me-2"></i>
                             Create {classCase}
@@ -96,7 +96,7 @@ export default function Index({ auth }) {
             ></PageHeader>
 
             {can(permissions.{underscoreCase}.create) && (
-                <OffCanvas id="{underscoreCase}FormCanvas" title={pageData.title}>
+                <OffCanvas id="{camelCase}FormCanvas" title={pageData.title}>
                     <Form get{classCasePlural}={get{classCasePlural}} {underscoreCase}={{underscoreCase}} />
                 </OffCanvas>
             )}

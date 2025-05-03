@@ -173,7 +173,7 @@ final class MakeModule extends Command
         $migrationStubFile = str_replace('{moduleName}', $moduleName, $migrationStubFile);
         $migrationStubFile = str_replace('{menuLabel}', $menuLabel, $migrationStubFile);
         $migrationStubFile = str_replace('{menuIcon}', $menuIcon, $migrationStubFile);
-        $migrationStubFile = str_replace('{parentId}', $parentId, $migrationStubFile);
+        $migrationStubFile = str_replace('{parentId}', $parentId ?? '', $migrationStubFile);
 
         $timestamp = now()->format('Y_m_d_His');
 
@@ -182,19 +182,21 @@ final class MakeModule extends Command
 
     private function createActions(): void
     {
+        $classCase = $this->case['classCase'];
+
         $createActionStubFile = $this->runReplacers(content: $this->getModuleStub('create.action'));
-        $createActionStubFile = str_replace('{actionName}', "Create$this->case['classCase']", $createActionStubFile);
+        $createActionStubFile = str_replace('{actionName}', "Create$classCase", $createActionStubFile);
 
         $updateActionStubFile = $this->runReplacers(content: $this->getModuleStub('update.action'));
-        $updateActionStubFile = str_replace('{actionName}', "Update$this->case['classCase']", $updateActionStubFile);
+        $updateActionStubFile = str_replace('{actionName}', "Update$classCase", $updateActionStubFile);
 
         // check if the directory exists
-        if (! is_dir(app_path("Actions/{$this->case['classCase']}"))) {
-            mkdir(app_path("Actions/{$this->case['classCase']}"));
+        if (! is_dir(app_path("Actions/{$classCase}"))) {
+            mkdir(app_path("Actions/{$classCase}"));
         }
 
-        file_put_contents(app_path("Actions/{$this->case['classCase']}/Create{$this->case['classCase']}.php"), $createActionStubFile);
-        file_put_contents(app_path("Actions/{$this->case['classCase']}/Update{$this->case['classCase']}.php"), $updateActionStubFile);
+        file_put_contents(app_path("Actions/{$classCase}/Create{$classCase}.php"), $createActionStubFile);
+        file_put_contents(app_path("Actions/{$classCase}/Update{$classCase}.php"), $updateActionStubFile);
     }
 
     private function replaceController(): void

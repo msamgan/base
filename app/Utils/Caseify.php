@@ -16,6 +16,7 @@ final class Caseify
             'underscoreCase' => Str::snake($text),
             'camelCasePlural' => Str::camel(Str::plural($text)),
             'underscoreCasePlural' => Str::snake(Str::plural($text)),
+            'classCasePlural' => Str::studly(Str::plural($text)),
         ];
     }
 }
