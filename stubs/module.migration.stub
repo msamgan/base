@@ -41,7 +41,7 @@ return new class extends Migration
             route: $underscoreCase . '.index',
             icon: $menuIcon,
             permission: $underscoreCase . '.list',
-            parent: parentId === '' ? null : $parentId,
+            parent: $parentId === '' ? null : $parentId,
         );
     }
 

@@ -34,7 +34,7 @@ final class RegisteredUserController extends Controller
     ): RedirectResponse {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', $this->getPasswordDefaults()],
             'business_name' => ['required', 'string', 'max:255'],
         ]);

@@ -9,7 +9,7 @@ export default function TopHeaderDropdown({ user }) {
         <li className="nav-item navbar-dropdown dropdown-user dropdown">
             <a className="nav-link dropdown-toggle hide-arrow" href="#" data-bs-toggle="dropdown">
                 <div className="avatar avatar-online">
-                    <img src={"../../assets/img/avatars/1.png"} alt="user-image" className="rounded-circle" />
+                    <img src={'../../assets/img/avatars/1.png'} alt="user-image" className="rounded-circle" />
                 </div>
             </a>
             <ul className="dropdown-menu dropdown-menu-end">
@@ -19,7 +19,7 @@ export default function TopHeaderDropdown({ user }) {
                             <div className="me-2 flex-shrink-0">
                                 <div className="avatar avatar-online">
                                     <img
-                                        src={"../../assets/img/avatars/1.png"}
+                                        src={'../../assets/img/avatars/1.png'}
                                         alt="user-image"
                                         className="rounded-circle"
                                     />

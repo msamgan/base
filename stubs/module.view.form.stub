@@ -5,23 +5,23 @@ import InputError from '@/Components/InputError.jsx'
 import { Transition } from '@headlessui/react'
 import { dataObject } from '@/Pages/{classCase}/helper.js'
 import { useEffect, useState } from 'react'
-import { routes } from '@/Utils/routes/index.js'
+import { store, update } from '@actions/{classCase}Controller.js'
 
-export default function Form({ get{classCasePlural}, {underscoreCase} = null}) {
-    const [action, setAction] = useState(routes.{underscoreCase}.store)
+export default function Form({ get{classCasePlural}, {camelCase} = null}) {
+    const [action, setAction] = useState(store.route())
     const { data, setData, post, errors, processing, recentlySuccessful, reset } = useForm(dataObject(null))
 
     useEffect(() => {
-        setAction({underscoreCase} ? routes.{underscoreCase}.update({underscoreCase}.id) : routes.{underscoreCase}.store)
-        setData(dataObject({underscoreCase}))
-    }, [{underscoreCase}])
+        setAction({camelCase} ? update.route({ {camelCase}: {camelCase}.id }) : store.route())
+        setData(dataObject({camelCase}))
+    }, [{camelCase}])
 
     const submit = (e) => {
         e.preventDefault()
 
         post(action, {
             onSuccess: (r) => {
-                if (!{underscoreCase}) {
+                if (!{camelCase}) {
                     reset('name')
                 }
 

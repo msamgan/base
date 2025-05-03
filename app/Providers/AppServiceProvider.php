@@ -36,7 +36,7 @@ final class AppServiceProvider extends ServiceProvider
     {
         foreach (File::allFiles(base_path(self::ROUTE_MODULE_DIR)) as $file) {
             Route::middleware(['web'])->group(function () use ($file): void {
-                $this->loadRoutesFrom(base_path(self::ROUTE_MODULE_DIR).$file->getFilename());
+                $this->loadRoutesFrom(base_path(self::ROUTE_MODULE_DIR) . $file->getFilename());
             });
         }
     }

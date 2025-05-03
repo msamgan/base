@@ -11,7 +11,7 @@ final class AssignPermissionToRole
 {
     public function handle(Role $role, string $permission, string $module): void
     {
-        $permissionName = $module.'.'.$permission;
+        $permissionName = $module . '.' . $permission;
 
         $permissionExists = Permission::query()->where('name', $permissionName)->exists();
         if (! $permissionExists) {

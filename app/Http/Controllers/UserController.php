@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\Access;
 use App\Actions\Notification\NotifyUser;
 use App\Actions\Role\AssignRole;
 use App\Http\Requests\DeleteUserRequest;
@@ -15,6 +14,7 @@ use App\Models\User;
 use App\Notifications\UserCreated;
 use App\Notifications\UserDeleted;
 use App\Notifications\UserUpdated;
+use App\Utils\Access;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;

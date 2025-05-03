@@ -50,7 +50,7 @@ final class RoleCreated extends Notification implements ShouldQueue
     {
         return [
             'title' => 'Role Created',
-            'message' => $this->user->name.' created a new role "'.$this->role->display_name.'" on '.now()->format('F j, Y, g:i a'),
+            'message' => $this->user->name . ' created a new role "' . $this->role->display_name . '" on ' . now()->format('F j, Y, g:i a'),
         ];
     }
 }
