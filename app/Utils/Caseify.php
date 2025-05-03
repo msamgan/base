@@ -10,14 +10,17 @@ final class Caseify
 {
     public static function handel(string $text): array
     {
+        $singular = Str::singular($text);
+        $plural = Str::plural($singular);
+
         return [
-            'classCase' => Str::studly($text),
-            'camelCase' => Str::camel($text),
-            'underscoreCase' => Str::snake($text),
-            'titleCase' => Str::title($text),
-            'camelCasePlural' => Str::camel(Str::plural($text)),
-            'underscoreCasePlural' => Str::snake(Str::plural($text)),
-            'classCasePlural' => Str::studly(Str::plural($text)),
+            'classCase' => Str::studly($singular),
+            'camelCase' => Str::camel($singular),
+            'underscoreCase' => Str::snake($singular),
+            'titleCase' => Str::title(Str::snake($singular, ' ')),
+            'camelCasePlural' => Str::camel($plural),
+            'underscoreCasePlural' => Str::snake($plural),
+            'classCasePlural' => Str::studly($plural),
         ];
     }
 }

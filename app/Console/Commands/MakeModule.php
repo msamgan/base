@@ -79,6 +79,8 @@ final class MakeModule extends Command
 
         $this->case = Caseify::handel($moduleName);
 
+        $moduleName = $this->case['classCase'];
+
         $this->info("Creating module: {$moduleName}");
 
         Artisan::call('make:model', ['name' => $this->case['classCase'], '--all' => true]);

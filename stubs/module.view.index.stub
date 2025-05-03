@@ -70,7 +70,7 @@ export default function Index({ auth }) {
 
     useEffect(() => {
         setData({camelCasePlural}.map(({camelCase}) => process{classCase}({camelCase})))
-    }, [{camelCasePlural}])
+    }, [{camelCase}])
 
     return (
         <Master user={auth.user} header={'{classCasePlural}'}>
