@@ -6,11 +6,11 @@ use App\Models\{classCase};
 
 class {actionName}
 {
-    public function handle({classCase} ${underscoreCase}, array $data): {classCase}
+    public function handle({classCase} ${camelCase}, array $data): {classCase}
     {
-        ${underscoreCase}->update($data);
+        ${camelCase}->update($data);
 
-        return ${underscoreCase};
+        return ${camelCase};
     }
 }
 

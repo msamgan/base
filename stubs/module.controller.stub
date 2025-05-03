@@ -47,7 +47,7 @@ class {classCase}Controller extends Controller
         }
     }
 
-    #[Action(params: ['${camelCase}'], middleware: ['auth', 'check_has_business', 'can:${underscoreCase}.update'])]
+    #[Action(params: ['{camelCase}'], middleware: ['auth', 'check_has_business', 'can:{underscoreCase}.update'])]
     public function show({classCase} ${camelCase}): {classCase}
     {
         // Access::businessCheck(businessId: ${camelCase}->business_id);
@@ -68,7 +68,7 @@ class {classCase}Controller extends Controller
     {
         $notifyUser->handle(new {classCase}Deleted(auth()->user()));
 
-        ${underscoreCase}->delete();
+        ${camelCase}->delete();
     }
 
     #[Action(middleware: ['auth', 'check_has_business', 'can:{underscoreCase}.list'])]

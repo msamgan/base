@@ -77,7 +77,7 @@ final class MakeModule extends Command
             );
         }
 
-        $this->case = Caseify::handel($moduleName);
+        $this->case = Caseify::handle($moduleName);
 
         $moduleName = $this->case['classCase'];
 
