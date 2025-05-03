@@ -1,11 +1,11 @@
-export const dataObject = ({underscoreCase}) => {
+export const dataObject = ({camelCase}) => {
     return {
-        name: {underscoreCase} ? {underscoreCase}.name : '',
+        name: {camelCase} ? {camelCase}.name : '',
     }
 }
 
-export const pageObject = ({underscoreCase}) => {
+export const pageObject = ({camelCase}) => {
     return {
-        title: {underscoreCase} ? 'Edit {classCase}' : 'Create {classCase}',
+        title: {camelCase} ? 'Edit {classCase}' : 'Create {classCase}',
     }
 }

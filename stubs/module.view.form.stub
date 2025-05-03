@@ -12,16 +12,16 @@ export default function Form({ get{classCasePlural}, {underscoreCase} = null}) {
     const { data, setData, post, errors, processing, recentlySuccessful, reset } = useForm(dataObject(null))
 
     useEffect(() => {
-        setAction({underscoreCase} ? update.route({ {underscoreCase}: {underscoreCase}.id }) : store.route())
-        setData(dataObject({underscoreCase}))
-    }, [{underscoreCase}])
+        setAction({camelCase} ? update.route({ {camelCase}: {camelCase}.id }) : store.route())
+        setData(dataObject({camelCase}))
+    }, [{camelCase}])
 
     const submit = (e) => {
         e.preventDefault()
 
         post(action, {
             onSuccess: (r) => {
-                if (!{underscoreCase}) {
+                if (!{camelCase}) {
                     reset('name')
                 }
 
