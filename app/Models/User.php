@@ -99,7 +99,7 @@ final class User extends Authenticatable
 
     public function businessId(): int
     {
-        return Auth::businessId();
+        return Auth::user()->key('business_id');
     }
 
     /**
