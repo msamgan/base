@@ -4,7 +4,7 @@ use App\Enums\PermissionEnum;
 use App\Http\Controllers\{classCase}Controller;
 use Illuminate\Support\Facades\Route;
 
- Route::get('{underscoreCasePlural}', [{classCase}Controller::class, 'index'])
+ Route::get('{kebabCase}', [{classCase}Controller::class, 'index'])
         ->middleware([PermissionEnum::{classCase}List->can(), 'auth', 'check_has_business'])
-        ->name('{underscoreCase}.index');
+        ->name('{dotCase}.index');
 
