@@ -49,7 +49,7 @@ final class UserUpdated extends Notification implements ShouldQueue
     {
         return [
             'title' => 'User Updated',
-            'message' => $this->user->name.' has updated '.$this->newUser->name.'.',
+            'message' => $this->user->name . ' has updated ' . $this->newUser->name . '.',
         ];
     }
 }

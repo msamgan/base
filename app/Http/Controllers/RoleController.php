@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\Access;
 use App\Actions\Notification\NotifyUser;
 use App\Actions\Role\CreateRole;
 use App\Actions\Role\UpdateRole;
@@ -15,6 +14,7 @@ use App\Models\Role;
 use App\Notifications\RoleCreated;
 use App\Notifications\RoleDeleted;
 use App\Notifications\RoleUpdated;
+use App\Utils\Access;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;

@@ -51,7 +51,7 @@ final class LoggedOut extends Notification
 
         return [
             'title' => 'Logged Out',
-            'message' => 'You have been logged out on '.$dataTime.'.',
+            'message' => 'You have been logged out on ' . $dataTime . '.',
         ];
     }
 }
