@@ -1,13 +1,15 @@
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.jsx'
-import { hasPermission } from '@/Utils/methods.js'
 import { permissions } from '@/Utils/permissions/index.js'
+import usePermissions from '@/Hooks/usePermissions'
 
 export default function TopHeaderDropdown({ user }) {
+    const { can } = usePermissions()
+
     return (
         <li className="nav-item navbar-dropdown dropdown-user dropdown">
             <a className="nav-link dropdown-toggle hide-arrow" href="#" data-bs-toggle="dropdown">
                 <div className="avatar avatar-online">
-                    <img src="../../assets/img/avatars/1.png" alt="user-image" className="rounded-circle" />
+                    <img src={"../../assets/img/avatars/1.png"} alt="user-image" className="rounded-circle" />
                 </div>
             </a>
             <ul className="dropdown-menu dropdown-menu-end">
@@ -17,7 +19,7 @@ export default function TopHeaderDropdown({ user }) {
                             <div className="me-2 flex-shrink-0">
                                 <div className="avatar avatar-online">
                                     <img
-                                        src="../../assets/img/avatars/1.png"
+                                        src={"../../assets/img/avatars/1.png"}
                                         alt="user-image"
                                         className="rounded-circle"
                                     />
@@ -39,7 +41,7 @@ export default function TopHeaderDropdown({ user }) {
                         <span className="align-middle">My Profile</span>
                     </ResponsiveNavLink>
                 </li>
-                {user.business_id && hasPermission(user, permissions.business.update) && (
+                {user.business_id && can(permissions.business.update) && (
                     <li>
                         <ResponsiveNavLink className="dropdown-item" href={route('business.settings')}>
                             <i className="ri-settings-3-line me-3 mt-1"></i>

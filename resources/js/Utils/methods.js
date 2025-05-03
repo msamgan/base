@@ -1,7 +1,3 @@
-export const hasPermission = (user, permission) => {
-    return user.access.filter((p) => p.name === permission).length > 0
-}
-
 export const formatDuration = (datetime) => {
     const now = new Date()
     const then = new Date(datetime)
@@ -27,21 +23,6 @@ export const formatDuration = (datetime) => {
     } else {
         return `${seconds} second${seconds > 1 ? 's' : ''} ago`
     }
-}
-
-export const makeGetCall = (url, setState, setLoading) => {
-    axios
-        .get(url)
-        .then((response) => {
-            // console.log(response.data)
-            setState(response.data)
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-        .finally(() => {
-            setLoading(false)
-        })
 }
 
 export const toTitleCase = (str) => {

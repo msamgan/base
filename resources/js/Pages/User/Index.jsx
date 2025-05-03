@@ -1,6 +1,5 @@
 import Master from '@/Layouts/Master.jsx'
 import { Head } from '@inertiajs/react'
-import { hasPermission } from '@/Utils/methods.js'
 import { permissions } from '@/Utils/permissions/index.js'
 import { useEffect, useState } from 'react'
 import Actions from '@/Components/helpers/Actions.jsx'
@@ -15,12 +14,10 @@ import Form from '@/Pages/User/Partials/Form.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
 import { roles as rcRoles } from '@actions/RoleController.js'
 import { destroy, show, users as ucUsers } from '@actions/UserController.js'
+import usePermissions from '@/Hooks/usePermissions'
 
 export default function Index({ auth }) {
-    let hasListPermission = hasPermission(auth.user, permissions.user.list)
-    let hasCreatePermission = hasPermission(auth.user, permissions.user.create)
-    let hasUpdatePermission = hasPermission(auth.user, permissions.user.update)
-    let hasDeletePermission = hasPermission(auth.user, permissions.user.delete)
+    const { can } = usePermissions()
 
     const [users, setUsers] = useState([])
     const [data, setData] = useState([])
@@ -43,7 +40,7 @@ export default function Index({ auth }) {
             Actions: (
                 <Actions
                     edit={
-                        hasUpdatePermission ? (
+                        can(permissions.user.update) ? (
                             <OffCanvasButton
                                 onClick={() => {
                                     getUser(user.id).then()
@@ -57,7 +54,7 @@ export default function Index({ auth }) {
                         ) : null
                     }
                     deleteAction={
-                        hasDeletePermission ? (
+                        can(permissions.user.delete) ? (
                             <DeleteEntityForm
                                 action={destroy.route({ user: user.id })}
                                 refresh={getUsers}
@@ -71,7 +68,7 @@ export default function Index({ auth }) {
     }
 
     useEffect(() => {
-        if (hasListPermission) {
+        if (can(permissions.user.list)) {
             getUsers().then()
         }
 
@@ -90,7 +87,7 @@ export default function Index({ auth }) {
                 title={'Users'}
                 subtitle={'Find all of your business’s users and there associated details.'}
                 action={
-                    hasCreatePermission && (
+                    can(permissions.user.create) && (
                         <OffCanvasButton
                             onClick={() => {
                                 setUser(null)
@@ -105,14 +102,14 @@ export default function Index({ auth }) {
                 }
             ></PageHeader>
 
-            {hasCreatePermission && (
+            {can(permissions.user.create) && (
                 <OffCanvas id="userFormCanvas" title={pageData.title}>
                     <Form getUsers={getUsers} roles={roles} user={user} />
                 </OffCanvas>
             )}
 
             <div className="col-12">
-                <Table data={data} loading={loading} permission={hasListPermission} />
+                <Table data={data} loading={loading} permission={can(permissions.user.list)} />
             </div>
         </Master>
     )

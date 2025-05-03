@@ -1,7 +1,6 @@
 import Master from '@/Layouts/Master.jsx'
 import { Head } from '@inertiajs/react'
 import PageHeader from '@/Components/PageHeader.jsx'
-import { hasPermission, makeGetCall } from '@/Utils/methods.js'
 import OffCanvasButton from '@/Components/off_canvas/OffCanvasButton.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Table from '@/Components/layout/Table.jsx'
@@ -15,12 +14,10 @@ import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
 import { permissions } from '@/Utils/permissions/index.js'
 import { destroy, roles as rcRoles, show } from '@actions/RoleController.js'
 import { permissions as pcPermissions } from '@actions/PermissionController.js'
+import usePermissions from '@/Hooks/usePermissions'
 
 export default function Index({ auth }) {
-    let hasListPermission = hasPermission(auth.user, permissions.role.list)
-    let hasCreatePermission = hasPermission(auth.user, permissions.role.create)
-    let hasUpdatePermission = hasPermission(auth.user, permissions.role.update)
-    let hasDeletePermission = hasPermission(auth.user, permissions.role.delete)
+    const { can } = usePermissions()
 
     const [roles, setRoles] = useState([])
     const [role, setRole] = useState(null)
@@ -43,7 +40,7 @@ export default function Index({ auth }) {
             Actions: (
                 <Actions
                     edit={
-                        hasUpdatePermission ? (
+                        can(permissions.role.update) ? (
                             <OffCanvasButton
                                 onClick={() => getRole(role.id).then()}
                                 className={'dropdown-item'}
@@ -54,7 +51,7 @@ export default function Index({ auth }) {
                         ) : null
                     }
                     deleteAction={
-                        hasDeletePermission ? (
+                        can(permissions.role.delete) ? (
                             <DeleteEntityForm
                                 action={destroy.route({ role: role.id })}
                                 refresh={getRoles}
@@ -68,7 +65,7 @@ export default function Index({ auth }) {
     }
 
     useEffect(() => {
-        if (hasListPermission) {
+        if (can(permissions.role.list)) {
             getRoles().then()
         }
 
@@ -87,7 +84,7 @@ export default function Index({ auth }) {
                 title={'Roles'}
                 subtitle={'Find all of your business’s roles and there associated permissions.'}
                 action={
-                    hasCreatePermission && (
+                    can(permissions.role.create) && (
                         <OffCanvasButton
                             onClick={() => {
                                 setRole(null)
@@ -102,14 +99,14 @@ export default function Index({ auth }) {
                 }
             ></PageHeader>
 
-            {hasCreatePermission && (
+            {can(permissions.role.create) && (
                 <OffCanvas id="roleFormCanvas" title={pageData.title}>
                     <Form getRoles={getRoles} role={role} permissionsList={permissionsList} />
                 </OffCanvas>
             )}
 
             <div className="col-12">
-                <Table data={data} loading={loading} permission={hasListPermission} />
+                <Table data={data} loading={loading} permission={can(permissions.role.list)} />
             </div>
         </Master>
     )
