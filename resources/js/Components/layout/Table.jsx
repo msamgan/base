@@ -1,5 +1,6 @@
 import Loading from '@/Components/Loading.jsx'
 import DisplayMessage from '@/Components/DisplayMessage.jsx'
+import { toTitleCase } from '@/Utils/methods.js'
 
 const TableContainer = ({ columns, data, tdClassName }) => {
     return (
@@ -13,7 +14,7 @@ const TableContainer = ({ columns, data, tdClassName }) => {
                     <thead className={'table-dark'}>
                         <tr>
                             {columns.map((column, index) => (
-                                <th key={index}>{column}</th>
+                                <th key={index}>{toTitleCase(column)}</th>
                             ))}
                         </tr>
                     </thead>
@@ -39,7 +40,9 @@ const TableContainer = ({ columns, data, tdClassName }) => {
     )
 }
 
-export default function Table({ columns, data, tdClassName = [], loading, permission }) {
+export default function Table({ data, tdClassName = [], loading, permission }) {
+    const columns = data.length > 0 ? Object.keys(data[0]).map(toTitleCase) : []
+
     return permission ? (
         loading ? (
             <Loading />

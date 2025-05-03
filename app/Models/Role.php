@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\ModelFunctions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -15,6 +16,7 @@ final class Role extends \Spatie\Permission\Models\Role
 {
     use HasFactory;
     use LogsActivity;
+    use ModelFunctions;
 
     protected $fillable = ['name', 'display_name', 'guard_name', 'business_id', 'created_by'];
 

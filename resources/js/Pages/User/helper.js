@@ -1,5 +1,3 @@
-export const columns = ['Name', 'Role', 'Status', 'Actions']
-
 export const dataObject = (user) => {
     return {
         name: user ? user.name : '',

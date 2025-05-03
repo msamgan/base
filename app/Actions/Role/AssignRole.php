@@ -11,11 +11,12 @@ final class AssignRole
 {
     public function handle(User $user, Role $role, bool $makeRoleActive = false): void
     {
+        $user->roles()->detach();
+
         $user->assignRole($role);
 
         if ($makeRoleActive) {
-            $user->role_id = $role->id;
-            $user->save();
+            $user->saveKey('role_id', $role->getKey());
         }
     }
 }

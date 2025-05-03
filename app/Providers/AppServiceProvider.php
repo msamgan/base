@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -20,6 +21,7 @@ final class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->autoloadRoutes();
+        $this->loadMacros();
     }
 
     /**
@@ -37,5 +39,10 @@ final class AppServiceProvider extends ServiceProvider
                 $this->loadRoutesFrom(base_path(self::ROUTE_MODULE_DIR).$file->getFilename());
             });
         }
+    }
+
+    private function loadMacros(): void
+    {
+        // Auth::macro('businessId', fn (): int => Auth::user()->key('business_id'));
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateBusinessRequest;
 use App\Models\Business;
 use Inertia\Inertia;
 use Inertia\Response;
+use Msamgan\Lact\Attributes\Action;
 
 final class BusinessController extends Controller
 {
@@ -56,6 +57,7 @@ final class BusinessController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[Action(method: 'post', params: ['business'], middleware: ['auth', 'check_has_business', 'can:business.update'])]
     public function update(UpdateBusinessRequest $request, Business $business, UpdateBusiness $updateBusiness): void
     {
         $updateBusiness->handle(business: $business, data: $request->validated());

@@ -11,9 +11,3 @@ Route::middleware(['auth'])->group(function (): void {
         ->middleware([PermissionEnum::BusinessUpdate->can(), 'check_has_business'])
         ->name('business.settings');
 });
-
-Route::middleware(['auth'])->group(function (): void {
-    Route::post('business/update/{business}', [BusinessController::class, 'update'])
-        ->middleware([PermissionEnum::BusinessUpdate->can(), 'check_has_business'])
-        ->name('business.update');
-});

@@ -6,12 +6,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\HigherOrderCollectionProxy;
+use Msamgan\Lact\Attributes\Action;
 use Spatie\Permission\Models\Permission;
 
 final class PermissionController extends Controller
 {
     private array $excludedModules = ['business'];
 
+    #[Action(middleware: ['auth'])]
     public function permissions(): Collection|HigherOrderCollectionProxy
     {
         $filteredPermissions = [];

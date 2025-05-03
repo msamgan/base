@@ -4,7 +4,7 @@ import { useForm } from '@inertiajs/react'
 import { currencies, timeZones, unitSystems, weightUnits } from '@/Utils/constants.js'
 import InputError from '@/Components/InputError.jsx'
 import { Transition } from '@headlessui/react'
-import { routes } from '@/Utils/routes/index.js'
+import { update } from '@actions/BusinessController.js'
 
 export default function GeneralInfo({ business }) {
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
@@ -23,7 +23,7 @@ export default function GeneralInfo({ business }) {
     const submit = (e) => {
         e.preventDefault()
 
-        post(routes.business.update(business.id))
+        post(update.route({ business: business.id }))
     }
 
     return (

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\ModelFunctions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +18,7 @@ final class Business extends Model
 {
     use HasFactory;
     use LogsActivity;
+    use ModelFunctions;
 
     public $hidden = [
         'user_id',

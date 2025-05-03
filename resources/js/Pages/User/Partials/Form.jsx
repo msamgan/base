@@ -5,14 +5,14 @@ import InputError from '@/Components/InputError.jsx'
 import { Transition } from '@headlessui/react'
 import { dataObject } from '@/Pages/User/helper.js'
 import { useEffect, useState } from 'react'
-import { routes } from '@/Utils/routes/index.js'
+import { store, update } from '@actions/UserController.js'
 
 export default function Form({ getUsers, user = null, roles }) {
-    const [action, setAction] = useState(routes.user.store)
+    const [action, setAction] = useState(store.route())
     const { data, setData, post, errors, processing, recentlySuccessful, reset } = useForm(dataObject(null))
 
     useEffect(() => {
-        setAction(user ? routes.user.update(user.id) : routes.user.store)
+        setAction(user ? update.route({ user: user.id }) : store.route())
         setData(dataObject(user))
     }, [user])
 

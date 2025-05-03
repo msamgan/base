@@ -1,7 +1,3 @@
-export const hasPermission = (user, permission) => {
-    return user.access.filter((p) => p.name === permission).length > 0
-}
-
 export const formatDuration = (datetime) => {
     const now = new Date()
     const then = new Date(datetime)
@@ -29,17 +25,11 @@ export const formatDuration = (datetime) => {
     }
 }
 
-export const makeGetCall = (url, setState, setLoading) => {
-    axios
-        .get(url)
-        .then((response) => {
-            // console.log(response.data)
-            setState(response.data)
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-        .finally(() => {
-            setLoading(false)
-        })
+export const toTitleCase = (str) => {
+    return str
+        .replace(/([A-Z])/g, ' $1')
+        .trim()
+        .split(' ')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
 }

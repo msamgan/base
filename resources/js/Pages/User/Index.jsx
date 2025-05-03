@@ -1,6 +1,5 @@
 import Master from '@/Layouts/Master.jsx'
 import { Head } from '@inertiajs/react'
-import { hasPermission, makeGetCall } from '@/Utils/methods.js'
 import { permissions } from '@/Utils/permissions/index.js'
 import { useEffect, useState } from 'react'
 import Actions from '@/Components/helpers/Actions.jsx'
@@ -8,37 +7,30 @@ import Name from '@/Components/helpers/Name.jsx'
 import ActiveBadge from '@/Components/helpers/ActiveBadge.jsx'
 import OffCanvasButton from '@/Components/off_canvas/OffCanvasButton.jsx'
 import Table from '@/Components/layout/Table.jsx'
-import { columns, pageObject } from '@/Pages/User/helper.js'
+import { pageObject } from '@/Pages/User/helper.js'
 import PageHeader from '@/Components/PageHeader.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Form from '@/Pages/User/Partials/Form.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
-import { services } from '@/Utils/services/index.js'
+import { roles as rcRoles } from '@actions/RoleController.js'
+import { destroy, show, users as ucUsers } from '@actions/UserController.js'
+import usePermissions from '@/Hooks/usePermissions'
 
 export default function Index({ auth }) {
-    let hasListPermission = hasPermission(auth.user, permissions.user.list)
-    let hasCreatePermission = hasPermission(auth.user, permissions.user.create)
-    let hasUpdatePermission = hasPermission(auth.user, permissions.user.update)
-    let hasDeletePermission = hasPermission(auth.user, permissions.user.delete)
+    const { can } = usePermissions()
 
     const [users, setUsers] = useState([])
     const [data, setData] = useState([])
     const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [pageData, setPageData] = useState(pageObject(null))
     const [roles, setRoles] = useState([])
 
-    const getUsers = () => {
-        makeGetCall(services.user.list, setUsers, setLoading)
-    }
+    const getUsers = async () => setUsers(await ucUsers.data({}))
 
-    const getRoles = () => {
-        makeGetCall(services.role.list, setRoles, setLoading)
-    }
+    const getRoles = async () => setRoles(await rcRoles.data({}))
 
-    const getUser = (id) => {
-        makeGetCall(services.user.show(id), setUser, setLoading)
-    }
+    const getUser = async (id) => setUser(await show.data({ params: { user: id } }))
 
     const processUser = (user) => {
         return {
@@ -48,10 +40,10 @@ export default function Index({ auth }) {
             Actions: (
                 <Actions
                     edit={
-                        hasUpdatePermission ? (
+                        can(permissions.user.update) ? (
                             <OffCanvasButton
                                 onClick={() => {
-                                    getUser(user.id)
+                                    getUser(user.id).then()
                                     setPageData(pageObject(user))
                                 }}
                                 className={'dropdown-item'}
@@ -62,9 +54,9 @@ export default function Index({ auth }) {
                         ) : null
                     }
                     deleteAction={
-                        hasDeletePermission ? (
+                        can(permissions.user.delete) ? (
                             <DeleteEntityForm
-                                action={route('service.user.destroy', user.id)}
+                                action={destroy.route({ user: user.id })}
                                 refresh={getUsers}
                                 className={'dropdown-item'}
                             />
@@ -76,11 +68,11 @@ export default function Index({ auth }) {
     }
 
     useEffect(() => {
-        if (hasListPermission) {
-            getUsers()
+        if (can(permissions.user.list)) {
+            getUsers().then()
         }
 
-        getRoles()
+        getRoles().then()
     }, [])
 
     useEffect(() => {
@@ -92,10 +84,10 @@ export default function Index({ auth }) {
             <Head title="Users" />
 
             <PageHeader
-                title={'Business User List'}
+                title={'Users'}
                 subtitle={'Find all of your business’s users and there associated details.'}
                 action={
-                    hasCreatePermission && (
+                    can(permissions.user.create) && (
                         <OffCanvasButton
                             onClick={() => {
                                 setUser(null)
@@ -110,14 +102,14 @@ export default function Index({ auth }) {
                 }
             ></PageHeader>
 
-            {hasCreatePermission && (
+            {can(permissions.user.create) && (
                 <OffCanvas id="userFormCanvas" title={pageData.title}>
                     <Form getUsers={getUsers} roles={roles} user={user} />
                 </OffCanvas>
             )}
 
             <div className="col-12">
-                <Table columns={columns} data={data} loading={loading} permission={hasListPermission} />
+                <Table data={data} loading={loading} permission={can(permissions.user.list)} />
             </div>
         </Master>
     )
