@@ -5,18 +5,20 @@ namespace App\Http\Controllers;
 use App\Actions\Notification\NotifyUser;
 use App\Actions\{classCase}\Create{classCase};
 use App\Actions\{classCase}\Update{classCase};
-// use App\Http\Requests\Delete{classCase}Request;
+use App\Http\Requests\Delete{classCase}Request;
 use App\Http\Requests\Store{classCase}Request;
 use App\Http\Requests\Update{classCase}Request;
 use App\Models\{classCase};
 use App\Notifications\{classCase}Created;
-// use App\Notifications\{classCase}Deleted;
+use App\Notifications\{classCase}Deleted;
 use App\Notifications\{classCase}Updated;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Msamgan\Lact\Attributes\Action;
+use Throwable;
 
 class {classCase}Controller extends Controller
 {
@@ -26,14 +28,15 @@ class {classCase}Controller extends Controller
     }
 
     /**
-     * @throws Exception
+     * @throws Exception|Throwable
      */
+     #[Action(method: 'post', middleware: ['auth', 'check_has_business', 'can:{underscoreCase}.create'])]
     public function store(Store{classCase}Request $request, Create{classCase} $create{classCase}, NotifyUser $notifyUser): void
     {
         DB::beginTransaction();
 
         try {
-            ${underscoreCase} = $create{classCase}->handle($request->validated());
+            ${camelCase} = $create{classCase}->handle($request->validated());
 
             $notifyUser->handle(new {classCase}Created(auth()->user()));
 
@@ -44,28 +47,32 @@ class {classCase}Controller extends Controller
         }
     }
 
-    public function show({classCase} ${underscoreCase}): {classCase}
+    #[Action(params: ['{camelCase}'], middleware: ['auth', 'check_has_business', 'can:{underscoreCase}.update'])]
+    public function show({classCase} ${camelCase}): {classCase}
     {
-        // Access::businessCheck(businessId: $user->business_id);
+        // Access::businessCheck(businessId: ${camelCase}->business_id);
 
-        return ${underscoreCase};
+        return ${camelCase};
     }
 
-    public function update(Update{classCase}Request $request, {classCase} ${underscoreCase}, Update{classCase} $update{classCase}, NotifyUser $notifyUser): void
+    #[Action(method: 'post', params: ['{camelCase}'], middleware: ['auth', 'check_has_business', 'can:{underscoreCase}.update'])]
+    public function update(Update{classCase}Request $request, {classCase} ${camelCase}, Update{classCase} $update{classCase}, NotifyUser $notifyUser): void
     {
-        $update{classCase}->handle(${underscoreCase}, $request->validated());
+        $update{classCase}->handle(${camelCase}, $request->validated());
 
         $notifyUser->handle(new {classCase}Updated(auth()->user()));
     }
 
-    /*public function destroy(Delete{classCase}Request $request, {classCase} ${underscoreCase}, NotifyUser $notifyUser): void
+    #[Action(method: 'delete', params: ['{camelCase}'], middleware: ['auth', 'check_has_business', 'can:{underscoreCase}.delete'])]
+    public function destroy(Delete{classCase}Request $request, {classCase} ${camelCase}, NotifyUser $notifyUser): void
     {
         $notifyUser->handle(new {classCase}Deleted(auth()->user()));
 
-        ${underscoreCase}->delete();
-    }*/
+        ${camelCase}->delete();
+    }
 
-    public function {underscoreCasePlural}(): Collection
+    #[Action(middleware: ['auth', 'check_has_business', 'can:{underscoreCase}.list'])]
+    public function {camelCasePlural}(): Collection
     {
         return {classCase}::query()->get();
     }

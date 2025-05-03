@@ -46,7 +46,7 @@ final class RoleDeleted extends Notification
     {
         return [
             'title' => 'Role Deleted',
-            'message' => $this->user->name.' deleted the role "'.$this->role->display_name.'" on '.now()->format('F j, Y, g:i a'),
+            'message' => $this->user->name . ' deleted the role "' . $this->role->display_name . '" on ' . now()->format('F j, Y, g:i a'),
         ];
     }
 }

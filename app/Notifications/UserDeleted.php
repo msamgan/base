@@ -45,7 +45,7 @@ final class UserDeleted extends Notification
     {
         return [
             'title' => 'User Deleted',
-            'message' => $this->user->name.' has deleted '.$this->newUser->name.'.',
+            'message' => $this->user->name . ' has deleted ' . $this->newUser->name . '.',
         ];
     }
 }

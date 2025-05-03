@@ -6,9 +6,9 @@ namespace App\Console\Commands;
 
 use App\Actions\Menu\CreateMenu;
 use App\Models\Menu;
+use App\Utils\Caseify;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Str;
 
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
@@ -28,6 +28,8 @@ final class MakeModule extends Command
      * @var string
      */
     protected $description = 'Create a new module';
+
+    private array $case;
 
     /**
      * Execute the console command.
@@ -75,46 +77,27 @@ final class MakeModule extends Command
             );
         }
 
-        $classCase = Str::of($moduleName)->trim()->title()->replace(' ', '')->toString();
-        $classCasePlural = Str::of($moduleName)->trim()->title()->plural()->replace(' ', '')->toString();
-        $underscoreCase = Str::of($moduleName)->trim()->snake()->replace(' ', '_')->toString();
-        $underscoreCasePlural = Str::of($moduleName)->trim()->snake()->plural()->replace(' ', '_')->toString();
+        $this->case = Caseify::handle($moduleName);
+
+        $moduleName = $this->case['classCase'];
 
         $this->info("Creating module: {$moduleName}");
 
-        Artisan::call('make:model', [
-            'name' => $classCase,
-            '--all' => true,
-        ]);
+        Artisan::call('make:model', ['name' => $this->case['classCase'], '--all' => true]);
 
-        $this->createRoutes($classCase, $underscoreCase, $underscoreCasePlural);
-        $this->createNotifications($classCase);
+        $this->createRoutes();
+        $this->createNotifications();
 
         sleep(2);
-        $this->createModuleMigration(
-            $moduleName,
-            $menuLabel,
-            $menuIcon,
-            $parentId,
-            $underscoreCase
-        );
+        $this->createModuleMigration($moduleName, $menuLabel, $menuIcon, $parentId);
 
-        $this->createActions($classCase, $underscoreCase);
+        $this->createActions();
 
-        $this->replaceController($classCase, $underscoreCase);
+        $this->replaceController();
 
-        $this->createView(
-            $classCase,
-            $classCasePlural,
-            $underscoreCase,
-            $underscoreCasePlural
-        );
+        $this->createView();
 
-        $this->createPermission($underscoreCase, $classCase);
-
-        $this->createService($underscoreCase, $underscoreCasePlural);
-
-        $this->createRoutesJs($underscoreCase);
+        $this->createPermission();
 
         $this->info("Module: {$moduleName} created successfully");
 
@@ -146,37 +129,38 @@ final class MakeModule extends Command
         );
     }
 
-    private function createRoutes(
-        string $classCase,
-        string $underscoreCase,
-        string $underscoreCasePlural
-    ): void {
-        $routeStubFile = file_get_contents(base_path('stubs/module.route.stub'));
-
-        $routeStubFile = str_replace('{classCase}', $classCase, $routeStubFile);
-        $routeStubFile = str_replace('{underscoreCase}', $underscoreCase, $routeStubFile);
-        $routeStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $routeStubFile);
-
-        file_put_contents(base_path("routes/modules/{$underscoreCase}.php"), $routeStubFile);
+    private function createRoutes(): void
+    {
+        file_put_contents(
+            base_path("routes/modules/{$this->case['underscoreCase']}.php"),
+            $this->runReplacers(content: $this->getModuleStub('route'))
+        );
     }
 
-    private function createNotifications(string $classCase): void
+    private function runReplacers(string $content): string
     {
-        $notifications = [
-            'Created',
-            'Updated',
-            'Deleted',
-        ];
+        foreach ($this->case as $key => $value) {
+            $content = str_replace('{' . $key . '}', $value, $content);
+        }
 
+        return $content;
+    }
+
+    private function getModuleStub(string $stub): string
+    {
+        return file_get_contents(base_path('stubs/module.' . $stub . '.stub'));
+    }
+
+    private function createNotifications(): void
+    {
+        $notifications = ['Created', 'Updated', 'Deleted'];
         foreach ($notifications as $notification) {
-            $notificationStubFile = file_get_contents(base_path('stubs/module.notification.stub'));
-
-            Artisan::call('make:notification', [
-                'name' => "{$classCase}{$notification}",
-            ]);
-
-            $notificationStubFile = str_replace('{notificationName}', "{$classCase}{$notification}", $notificationStubFile);
-            file_put_contents(app_path("Notifications/{$classCase}{$notification}.php"), $notificationStubFile);
+            $notificationStubFile = $this->getModuleStub('notification');
+            Artisan::call('make:notification', ['name' => "{$this->case['classCase']}{$notification}"]);
+            file_put_contents(
+                app_path("Notifications/{$this->case['classCase']}{$notification}.php"),
+                str_replace('{notificationName}', "{$this->case['classCase']}{$notification}", $notificationStubFile)
+            );
         }
     }
 
@@ -185,33 +169,28 @@ final class MakeModule extends Command
         string $menuLabel,
         string $menuIcon,
         ?string $parentId,
-        string $underscoreCase
     ): void {
-        $migrationStubFile = file_get_contents(base_path('stubs/module.migration.stub'));
+        $migrationStubFile = $this->getModuleStub('migration');
 
         $migrationStubFile = str_replace('{moduleName}', $moduleName, $migrationStubFile);
         $migrationStubFile = str_replace('{menuLabel}', $menuLabel, $migrationStubFile);
         $migrationStubFile = str_replace('{menuIcon}', $menuIcon, $migrationStubFile);
-        $migrationStubFile = str_replace('{parentId}', $parentId, $migrationStubFile);
+        $migrationStubFile = str_replace('{parentId}', $parentId ?? '', $migrationStubFile);
 
         $timestamp = now()->format('Y_m_d_His');
 
-        file_put_contents(database_path("migrations/{$timestamp}_create_module_{$underscoreCase}.php"), $migrationStubFile);
+        file_put_contents(database_path("migrations/{$timestamp}_create_module_{$this->case['underscoreCase']}.php"), $migrationStubFile);
     }
 
-    private function createActions(string $classCase, string $underscoreCase): void
+    private function createActions(): void
     {
-        $createActionStubFile = file_get_contents(base_path('stubs/module.create.action.stub'));
+        $classCase = $this->case['classCase'];
 
-        $createActionStubFile = str_replace('{classCase}', $classCase, $createActionStubFile);
+        $createActionStubFile = $this->runReplacers(content: $this->getModuleStub('create.action'));
         $createActionStubFile = str_replace('{actionName}', "Create$classCase", $createActionStubFile);
-        $createActionStubFile = str_replace('{underscoreCase}', $underscoreCase, $createActionStubFile);
 
-        $updateActionStubFile = file_get_contents(base_path('stubs/module.update.action.stub'));
-
-        $updateActionStubFile = str_replace('{classCase}', $classCase, $updateActionStubFile);
+        $updateActionStubFile = $this->runReplacers(content: $this->getModuleStub('update.action'));
         $updateActionStubFile = str_replace('{actionName}', "Update$classCase", $updateActionStubFile);
-        $updateActionStubFile = str_replace('{underscoreCase}', $underscoreCase, $updateActionStubFile);
 
         // check if the directory exists
         if (! is_dir(app_path("Actions/{$classCase}"))) {
@@ -222,68 +201,36 @@ final class MakeModule extends Command
         file_put_contents(app_path("Actions/{$classCase}/Update{$classCase}.php"), $updateActionStubFile);
     }
 
-    private function replaceController(string $classCase, string $underscoreCase): void
+    private function replaceController(): void
     {
-        $underscoreCasePlural = Str::of($underscoreCase)->plural()->toString();
-
-        $controllerStubFile = file_get_contents(base_path('stubs/module.controller.stub'));
-
-        $controllerStubFile = str_replace('{classCase}', $classCase, $controllerStubFile);
-        $controllerStubFile = str_replace('{underscoreCase}', $underscoreCase, $controllerStubFile);
-        $controllerStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $controllerStubFile);
-
-        file_put_contents(app_path("Http/Controllers/{$classCase}Controller.php"), $controllerStubFile);
+        file_put_contents(
+            app_path("Http/Controllers/{$this->case['classCase']}Controller.php"),
+            $this->runReplacers(content: $this->getModuleStub('controller'))
+        );
     }
 
-    private function createView(
-        string $classCase,
-        string $classCasePlural,
-        string $underscoreCase,
-        string $underscoreCasePlural,
-    ): void {
-        $viewHelperStubFile = file_get_contents(base_path('stubs/module.view.helper.stub'));
-        $viewFormStubFile = file_get_contents(base_path('stubs/module.view.form.stub'));
-        $viewIndexStubFile = file_get_contents(base_path('stubs/module.view.index.stub'));
-
-        $viewHelperStubFile = str_replace('{classCase}', $classCase, $viewHelperStubFile);
-        $viewHelperStubFile = str_replace('{classCasePlural}', $classCasePlural, $viewHelperStubFile);
-        $viewHelperStubFile = str_replace('{underscoreCase}', $underscoreCase, $viewHelperStubFile);
-        $viewHelperStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $viewHelperStubFile);
-
-        $viewFormStubFile = str_replace('{classCase}', $classCase, $viewFormStubFile);
-        $viewFormStubFile = str_replace('{classCasePlural}', $classCasePlural, $viewFormStubFile);
-        $viewFormStubFile = str_replace('{underscoreCase}', $underscoreCase, $viewFormStubFile);
-        $viewFormStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $viewFormStubFile);
-
-        $viewIndexStubFile = str_replace('{classCase}', $classCase, $viewIndexStubFile);
-        $viewIndexStubFile = str_replace('{classCasePlural}', $classCasePlural, $viewIndexStubFile);
-        $viewIndexStubFile = str_replace('{underscoreCase}', $underscoreCase, $viewIndexStubFile);
-        $viewIndexStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $viewIndexStubFile);
-
-        // check if the directory exists
-        if (! is_dir(resource_path("js/Pages/{$classCase}"))) {
-            mkdir(resource_path("js/Pages/{$classCase}"));
+    private function createView(): void
+    {
+        if (! is_dir(resource_path("js/Pages/{$this->case['classCase']}"))) {
+            mkdir(resource_path("js/Pages/{$this->case['classCase']}"));
         }
 
-        if (! is_dir(resource_path("js/Pages/{$classCase}/Partials"))) {
-            mkdir(resource_path("js/Pages/{$classCase}/Partials"));
+        if (! is_dir(resource_path("js/Pages/{$this->case['classCase']}/Partials"))) {
+            mkdir(resource_path("js/Pages/{$this->case['classCase']}/Partials"));
         }
 
-        file_put_contents(resource_path("js/Pages/{$classCase}/helper.js"), $viewHelperStubFile);
-        file_put_contents(resource_path("js/Pages/{$classCase}/Partials/Form.jsx"), $viewFormStubFile);
-        file_put_contents(resource_path("js/Pages/{$classCase}/Index.jsx"), $viewIndexStubFile);
+        file_put_contents(resource_path("js/Pages/{$this->case['classCase']}/helper.js"), $this->runReplacers(content: $this->getModuleStub('view.helper')));
+        file_put_contents(resource_path("js/Pages/{$this->case['classCase']}/Partials/Form.jsx"), $this->runReplacers(content: $this->getModuleStub('view.form')));
+        file_put_contents(resource_path("js/Pages/{$this->case['classCase']}/Index.jsx"), $this->runReplacers(content: $this->getModuleStub('view.index')));
     }
 
-    private function createPermission(
-        string $underscoreCase,
-        string $classCase,
-    ): void {
-        // JS Part..
-        $permissionStubFile = file_get_contents(base_path('stubs/module.permission.stub'));
+    private function createPermission(): void
+    {
+        $underscoreCase = $this->case['underscoreCase'];
+        $classCase = $this->case['classCase'];
 
-        $permissionStubFile = str_replace('{underscoreCase}', $underscoreCase, $permissionStubFile);
-
-        file_put_contents(resource_path("js/Utils/permissions/{$underscoreCase}.js"), $permissionStubFile);
+        // JS Part...
+        file_put_contents(resource_path("js/Utils/permissions/{$underscoreCase}.js"), $this->runReplacers(content: $this->getModuleStub('permission')));
 
         $permissionImport = "import { {$underscoreCase} } from '@/Utils/permissions/{$underscoreCase}.js';";
         $addStatement = "    $underscoreCase,";
@@ -292,16 +239,16 @@ final class MakeModule extends Command
 
         foreach ($fileLines as $key => $line) {
             if ($line === "\n") {
-                $fileLines[$key] = $permissionImport."\n";
+                $fileLines[$key] = $permissionImport . "\n";
                 array_splice($fileLines, $key + 1, 0, "\n");
             }
         }
 
-        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement."\n");
+        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement . "\n");
 
         file_put_contents(resource_path('js/Utils/permissions/index.js'), implode('', $fileLines));
 
-        // PHP Part..
+        // PHP Part...
         $permissionEnumFile = file(app_path('Enums/PermissionEnum.php'));
 
         $newPermission = "    case {$classCase}List = '{$underscoreCase}.list';\n";
@@ -327,59 +274,5 @@ final class MakeModule extends Command
         }
 
         file_put_contents(app_path('Enums/PermissionEnum.php'), implode('', $permissionEnumFile));
-    }
-
-    private function createService(
-        string $underscoreCase,
-        string $underscoreCasePlural,
-    ): void {
-        $serviceStubFile = file_get_contents(base_path('stubs/module.service.stub'));
-
-        $serviceStubFile = str_replace('{underscoreCase}', $underscoreCase, $serviceStubFile);
-        $serviceStubFile = str_replace('{underscoreCasePlural}', $underscoreCasePlural, $serviceStubFile);
-
-        file_put_contents(resource_path("js/Utils/services/{$underscoreCase}.js"), $serviceStubFile);
-
-        $serviceImport = "import { {$underscoreCase} } from '@/Utils/services/{$underscoreCase}.js';";
-        $addStatement = "    $underscoreCase,";
-
-        $fileLines = file(resource_path('js/Utils/services/index.js'));
-
-        foreach ($fileLines as $key => $line) {
-            if ($line === "\n") {
-                $fileLines[$key] = $serviceImport."\n";
-                array_splice($fileLines, $key + 1, 0, "\n");
-            }
-        }
-
-        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement."\n");
-
-        file_put_contents(resource_path('js/Utils/services/index.js'), implode('', $fileLines));
-    }
-
-    private function createRoutesJs(
-        string $underscoreCase,
-    ): void {
-        $routesJsStubFile = file_get_contents(base_path('stubs/module.route.js.stub'));
-
-        $routesJsStubFile = str_replace('{underscoreCase}', $underscoreCase, $routesJsStubFile);
-
-        file_put_contents(resource_path("js/Utils/routes/{$underscoreCase}.js"), $routesJsStubFile);
-
-        $routeImport = "import { {$underscoreCase} } from '@/Utils/routes/{$underscoreCase}.js';";
-        $addStatement = "    $underscoreCase,";
-
-        $fileLines = file(resource_path('js/Utils/routes/index.js'));
-
-        foreach ($fileLines as $key => $line) {
-            if ($line === "\n") {
-                $fileLines[$key] = $routeImport."\n";
-                array_splice($fileLines, $key + 1, 0, "\n");
-            }
-        }
-
-        array_splice($fileLines, count($fileLines) - 1, 0, $addStatement."\n");
-
-        file_put_contents(resource_path('js/Utils/routes/index.js'), implode('', $fileLines));
     }
 }

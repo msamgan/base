@@ -52,7 +52,7 @@ final class LoggedIn extends Notification
         $browser = Browser::browserName();
         $device = Browser::deviceType();
 
-        $message = 'You have been logged in on '.$dataTime.'. With a '.$device.'. Using '.$browser.'.';
+        $message = 'You have been logged in on ' . $dataTime . '. With a ' . $device . '. Using ' . $browser . '.';
 
         return [
             'title' => 'Logged In',

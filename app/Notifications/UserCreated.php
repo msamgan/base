@@ -50,7 +50,7 @@ final class UserCreated extends Notification implements ShouldQueue
     {
         return [
             'title' => 'New User Created',
-            'message' => $this->newUser->name.' has been created by '.$this->user->name.' with role '.$this->role->display_name.', On '.now()->format('F j, Y, g:i a'),
+            'message' => $this->newUser->name . ' has been created by ' . $this->user->name . ' with role ' . $this->role->display_name . ', On ' . now()->format('F j, Y, g:i a'),
         ];
     }
 }

@@ -8,7 +8,7 @@ class {actionName}
 {
     public function handle(array $data): {classCase}
     {
-        return {classCase}::create($data);
+        return {classCase}::query()->create($data);
     }
 }
 

@@ -12,8 +12,8 @@ import ActiveBadge from '@/Components/helpers/ActiveBadge.jsx'
 import Actions from '@/Components/helpers/Actions.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
 import { permissions } from '@/Utils/permissions/index.js'
-import { destroy, roles as rcRoles, show } from '@actions/RoleController.js'
-import { permissions as pcPermissions } from '@actions/PermissionController.js'
+import { destroy, roles as _roles, show } from '@actions/RoleController.js'
+import { permissions as _permissions } from '@actions/PermissionController.js'
 import usePermissions from '@/Hooks/usePermissions'
 
 export default function Index({ auth }) {
@@ -26,9 +26,9 @@ export default function Index({ auth }) {
     const [loading, setLoading] = useState(false)
     const [permissionsList, setPermissionsList] = useState([])
 
-    const getPermissions = async () => setPermissionsList(await pcPermissions.data({}))
+    const getPermissions = async () => setPermissionsList(await _permissions.data({}))
 
-    const getRoles = async () => setRoles(await rcRoles.data({}))
+    const getRoles = async () => setRoles(await _roles.data({}))
 
     const getRole = async (id) => setRole(await show.data({ params: { role: id } }))
 

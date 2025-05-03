@@ -12,7 +12,7 @@ final class CreatePermission
 {
     public function handle(string $permission, string $module): void
     {
-        $permissionName = $module.'.'.$permission;
+        $permissionName = $module . '.' . $permission;
 
         Permission::create(['name' => $permissionName]);
 
