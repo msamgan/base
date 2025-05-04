@@ -28,6 +28,6 @@ final class Caseify
 
     private static function toDotCase(string $text): string
     {
-        return mb_trim(mb_strtolower(preg_replace('/([A-Z])/', '.$1', $text)), '.');
+        return mb_trim(mb_strtolower((string) preg_replace('/([A-Z])/', '.$1', $text)), '.');
     }
 }

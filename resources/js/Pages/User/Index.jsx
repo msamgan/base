@@ -11,26 +11,33 @@ import { pageObject } from '@/Pages/User/helper.js'
 import PageHeader from '@/Components/PageHeader.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Form from '@/Pages/User/Partials/Form.jsx'
-import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
 import { roles as rcRoles } from '@actions/RoleController.js'
-import { destroy, show, users as ucUsers } from '@actions/UserController.js'
+import { destroy, show, users as _users } from '@actions/UserController.js'
 import usePermissions from '@/Hooks/usePermissions'
+import EditActionButton from '@/Components/EditActionButton.jsx'
+import DeleteActionButton from '@/Components/DeleteActionButton.jsx'
+import CreateActionButton from '@/Components/CreateActionButton.jsx'
 
-export default function Index({ auth }) {
+export default function Index() {
     const { can } = usePermissions()
 
     const [users, setUsers] = useState([])
     const [data, setData] = useState([])
     const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [pageData, setPageData] = useState(pageObject(null))
     const [roles, setRoles] = useState([])
 
-    const getUsers = async () => setUsers(await ucUsers.data({}))
+    const getUsers = async () => setUsers(await _users.data({}))
 
     const getRoles = async () => setRoles(await rcRoles.data({}))
 
     const getUser = async (id) => setUser(await show.data({ params: { user: id } }))
+
+    const editUser = (user) => {
+        getUser(user.id).then()
+        setPageData(pageObject(user))
+    }
 
     const processUser = (user) => {
         return {
@@ -39,28 +46,13 @@ export default function Index({ auth }) {
             Status: <ActiveBadge value={'Active'} />,
             Actions: (
                 <Actions
-                    edit={
-                        can(permissions.user.update) ? (
-                            <OffCanvasButton
-                                onClick={() => {
-                                    getUser(user.id).then()
-                                    setPageData(pageObject(user))
-                                }}
-                                className={'dropdown-item'}
-                                id="userFormCanvas"
-                            >
-                                <i className="ri-pencil-line me-1 text-primary"></i> Edit
-                            </OffCanvasButton>
-                        ) : null
-                    }
+                    edit={<EditActionButton module={'user'} onClick={() => editUser(user)} />}
                     deleteAction={
-                        can(permissions.user.delete) ? (
-                            <DeleteEntityForm
-                                action={destroy.route({ user: user.id })}
-                                refresh={getUsers}
-                                className={'dropdown-item'}
-                            />
-                        ) : null
+                        <DeleteActionButton
+                            module={'user'}
+                            route={destroy.route({ user: user.id })}
+                            refresh={getUsers}
+                        />
                     }
                 />
             ),
@@ -69,7 +61,9 @@ export default function Index({ auth }) {
 
     useEffect(() => {
         if (can(permissions.user.list)) {
-            getUsers().then()
+            getUsers()
+                .then()
+                .finally(() => setLoading(false))
         }
 
         getRoles().then()
@@ -80,29 +74,24 @@ export default function Index({ auth }) {
     }, [users])
 
     return (
-        <Master user={auth.user} header={'Users'}>
+        <Master>
             <Head title="Users" />
 
             <PageHeader
                 title={'Users'}
                 subtitle={'Find all of your business’s users and there associated details.'}
                 action={
-                    can(permissions.user.create) && (
-                        <OffCanvasButton
-                            onClick={() => {
-                                setUser(null)
-                                setPageData(pageObject(null))
-                            }}
-                            id="userFormCanvas"
-                        >
-                            <i className="ri-add-line me-2"></i>
-                            Create User
-                        </OffCanvasButton>
-                    )
+                    <CreateActionButton
+                        module={'user'}
+                        onClick={() => {
+                            setUser(null)
+                            setPageData(pageObject(null))
+                        }}
+                    />
                 }
             ></PageHeader>
 
-            {can(permissions.user.create) && (
+            {can([permissions.user.view, permissions.user.update, permissions.user.create]) && (
                 <OffCanvas id="userFormCanvas" title={pageData.title}>
                     <Form getUsers={getUsers} roles={roles} user={user} />
                 </OffCanvas>

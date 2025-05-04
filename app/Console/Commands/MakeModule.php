@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Actions\Menu\CreateMenu;
 use App\Models\Menu;
 use App\Utils\Caseify;
 use Illuminate\Console\Command;
@@ -67,8 +66,9 @@ final class MakeModule extends Command
         );
 
         $parentId = null;
+        $parentMenuData = [];
         if ($parentManuOptions === 2) {
-            $parentId = $this->newMenu()->id;
+            $parentMenuData = $this->newMenu();
         } elseif ($parentManuOptions === 3) {
             $parentId = select(
                 label: 'Select the parent menu',
@@ -84,29 +84,41 @@ final class MakeModule extends Command
         $this->info("Creating module: {$moduleName}");
 
         Artisan::call('make:model', ['name' => $this->case['classCase'], '--all' => true]);
+        $this->info('Model files created');
 
         $this->createRoutes();
+        $this->info('Routes files created');
+
         $this->createNotifications();
+        $this->info('Notification files created');
 
         sleep(2);
-        $this->createModuleMigration($moduleName, $menuLabel, $menuIcon, $parentId);
+        $this->createModuleMigration($moduleName, $menuLabel, $menuIcon, $parentId, $parentMenuData);
+        $this->info('Module migration created');
 
         $this->createActions();
+        $this->info('Action files created');
 
         $this->replaceController();
+        $this->info('Controller updated.');
 
         $this->createView();
+        $this->info('View files created');
 
         $this->createPermission();
+        $this->info('Permission files created');
 
         $this->info("Module: {$moduleName} created successfully");
+
+        $this->info('Running Formatter...');
+        exec('npm run format');
 
         $this->info('To Do:');
         $this->info('1. Update the migrations for the module table.');
         $this->info('4. Run the Migrations.');
     }
 
-    private function newMenu(): Menu
+    private function newMenu(): array
     {
         $label = text(
             label: 'What is the label for the New Parent Menu?',
@@ -121,12 +133,10 @@ final class MakeModule extends Command
             hint: 'We are using Remix Icon, you can find the icon name here: https://remixicon.com/',
         );
 
-        return (new CreateMenu)->handle(
-            label: $label,
-            route: '#',
-            icon: $icon,
-            permission: null,
-        );
+        return [
+            'label' => $label,
+            'icon' => $icon,
+        ];
     }
 
     private function createRoutes(): void
@@ -169,6 +179,7 @@ final class MakeModule extends Command
         string $menuLabel,
         string $menuIcon,
         ?string $parentId,
+        array $parentMenuData
     ): void {
         $migrationStubFile = $this->getModuleStub('migration');
 
@@ -176,6 +187,16 @@ final class MakeModule extends Command
         $migrationStubFile = str_replace('{menuLabel}', $menuLabel, $migrationStubFile);
         $migrationStubFile = str_replace('{menuIcon}', $menuIcon, $migrationStubFile);
         $migrationStubFile = str_replace('{parentId}', $parentId ?? '', $migrationStubFile);
+
+        if (count($parentMenuData) > 0) {
+            $migrationStubFile = str_replace('{haveNewParent}', 'yes', $migrationStubFile);
+            $migrationStubFile = str_replace('{parentMenuLabel}', $parentMenuData['label'], $migrationStubFile);
+            $migrationStubFile = str_replace('{parentMenuIcon}', $parentMenuData['icon'], $migrationStubFile);
+        } else {
+            $migrationStubFile = str_replace('{haveNewParent}', 'no', $migrationStubFile);
+            $migrationStubFile = str_replace('{parentMenuLabel}', 'NA', $migrationStubFile);
+            $migrationStubFile = str_replace('{parentMenuIcon}', 'NA', $migrationStubFile);
+        }
 
         $timestamp = now()->format('Y_m_d_His');
 
@@ -230,7 +251,10 @@ final class MakeModule extends Command
         $classCase = $this->case['classCase'];
 
         // JS Part...
-        file_put_contents(resource_path("js/Utils/permissions/{$underscoreCase}.js"), $this->runReplacers(content: $this->getModuleStub('permission')));
+        file_put_contents(
+            resource_path("js/Utils/permissions/{$underscoreCase}.js"),
+            $this->runReplacers(content: $this->getModuleStub('permission'))
+        );
 
         $permissionImport = "import { {$underscoreCase} } from '@/Utils/permissions/{$underscoreCase}.js';";
         $addStatement = "    $underscoreCase,";
@@ -253,6 +277,7 @@ final class MakeModule extends Command
 
         $newPermission = "    case {$classCase}List = '{$underscoreCase}.list';\n";
         $newPermission .= "    case {$classCase}Create = '{$underscoreCase}.create';\n";
+        $newPermission .= "    case {$classCase}View = '{$underscoreCase}.view';\n";
         $newPermission .= "    case {$classCase}Update = '{$underscoreCase}.update';\n";
         $newPermission .= "    case {$classCase}Delete = '{$underscoreCase}.delete';\n";
         $newPermission .= "\n";
@@ -260,6 +285,7 @@ final class MakeModule extends Command
         $newPermissionCan = "\n";
         $newPermissionCan .= "            self::{$classCase}List => 'can:{$underscoreCase}.list',\n";
         $newPermissionCan .= "            self::{$classCase}Create => 'can:{$underscoreCase}.create',\n";
+        $newPermissionCan .= "            self::{$classCase}View => 'can:{$underscoreCase}.view',\n";
         $newPermissionCan .= "            self::{$classCase}Update => 'can:{$underscoreCase}.update',\n";
         $newPermissionCan .= "            self::{$classCase}Delete => 'can:{$underscoreCase}.delete',\n";
 

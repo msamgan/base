@@ -49,7 +49,7 @@ final class RoleController extends Controller
         }
     }
 
-    #[Action(params: ['role'], middleware: ['auth', 'check_has_business', 'can:role.update'])]
+    #[Action(params: ['role'], middleware: ['auth', 'check_has_business', 'can:role.view'])]
     public function show(Role $role): Role
     {
         Access::businessCheck(businessId: $role->key('business_id'));

@@ -9,26 +9,32 @@ use Illuminate\Support\Str;
 
 return new class extends Migration
 {
+    use App\Concerns\PermissionFunctions;
+
     public function up(): void
     {
         $moduleName = '{moduleName}';
         $menuLabel = '{menuLabel}';
         $menuIcon = '{menuIcon}';
         $parentId = '{parentId}';
+        $haveNewParent = '{haveNewParent}';
 
-        // $classCase = Str::of($moduleName)->trim()->title()->replace(' ', '')->toString();
-        $underscoreCase = Str::of($moduleName)->trim()->snake()->replace(' ', '_')->toString();
+        if ($haveNewParent === 'yes') {
+            $parentId = ((new CreateMenu)->handle(
+                label: '{parentMenuLabel}',
+                route: '#',
+                icon: '{parentMenuIcon}',
+                permission: null,
+            ))->getKey();
+        }
 
-        $rolePermissions = [
-            'list',
-            'create',
-            'update',
-            'delete',
-        ];
+        $case = App\Utils\Caseify::handle($moduleName);
 
-        $businessRole = Role::find(RoleEnum::Business->id());
+        $underscoreCase = $case['underscoreCase'];
 
-        foreach ($rolePermissions as $permission) {
+        $businessRole = Role::business();
+
+        foreach ($this->permissionList() as $permission) {
             (new AssignPermissionToRole)->handle(
                 role: $businessRole,
                 permission: $permission,

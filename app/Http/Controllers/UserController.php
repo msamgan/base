@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Notification\NotifyUser;
 use App\Actions\Role\AssignRole;
+use App\Enums\RoleEnum;
 use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -60,7 +61,7 @@ final class UserController extends Controller
         }
     }
 
-    #[Action(params: ['user'], middleware: ['auth', 'check_has_business', 'can:user.update'])]
+    #[Action(params: ['user'], middleware: ['auth', 'check_has_business', 'can:user.view'])]
     public function show(User $user): User
     {
         Access::businessCheck(businessId: $user->business_id);
@@ -100,9 +101,16 @@ final class UserController extends Controller
     #[Action(middleware: ['auth', 'check_has_business', 'can:user.list'])]
     public function users(): Collection
     {
-        return User::query()->where('business_id', auth()->user()->business_id)
+        $query = User::query()->where('business_id', auth()->user()->key('business_id'))
             ->where('id', '!=', auth()->id())
-            ->with(['roles'])
-            ->get();
+            ->with(['roles']);
+
+        if (! auth()->user()->hasRole([RoleEnum::Business, RoleEnum::SuperAdmin])) {
+            $query->whereDoesntHave('roles', function ($q): void {
+                $q->where('display_name', RoleEnum::Business);
+            });
+        }
+
+        return $query->get();
     }
 }

@@ -15,7 +15,7 @@ final class CreateMenu
         ?string $permission,
         ?int $order = 0,
         ?bool $isActive = true,
-        ?string $parent = null
+        ?int $parent = null
     ): Menu {
         return Menu::query()->create([
             'parent_id' => $parent,

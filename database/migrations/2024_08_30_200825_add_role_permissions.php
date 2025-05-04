@@ -3,24 +3,18 @@
 declare(strict_types=1);
 
 use App\Actions\Permission\AssignPermissionToRole;
-use App\Enums\RoleEnum;
 use App\Models\Role;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
+    use App\Concerns\PermissionFunctions;
+
     public function up(): void
     {
-        $rolePermissions = [
-            'list',
-            'create',
-            'update',
-            'delete',
-        ];
+        $businessRole = Role::business();
 
-        $businessRole = Role::find(RoleEnum::Business->id());
-
-        foreach ($rolePermissions as $permission) {
+        foreach ($this->permissionList() as $permission) {
             (new AssignPermissionToRole)->handle(
                 role: $businessRole,
                 permission: $permission,
@@ -28,7 +22,7 @@ return new class extends Migration
             );
         }
 
-        foreach ($rolePermissions as $permission) {
+        foreach ($this->permissionList() as $permission) {
             (new AssignPermissionToRole)->handle(
                 role: $businessRole,
                 permission: $permission,
