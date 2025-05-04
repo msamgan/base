@@ -5,13 +5,11 @@ import { useEffect, useState } from 'react'
 import Actions from '@/Components/helpers/Actions.jsx'
 import Name from '@/Components/helpers/Name.jsx'
 import ActiveBadge from '@/Components/helpers/ActiveBadge.jsx'
-import OffCanvasButton from '@/Components/off_canvas/OffCanvasButton.jsx'
 import Table from '@/Components/layout/Table.jsx'
 import { pageObject } from '@/Pages/{classCase}/helper.js'
 import PageHeader from '@/Components/PageHeader.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Form from '@/Pages/{classCase}/Partials/Form.jsx'
-import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
 import { destroy, {camelCasePlural} as _{camelCasePlural}, show } from '@actions/{classCase}Controller.js'
 import usePermissions from '@/Hooks/usePermissions'
 import EditActionButton from '@/Components/EditActionButton.jsx'
@@ -32,7 +30,7 @@ export default function Index({ auth }) {
     const get{classCase} = async (id) => set{classCase}(await show.data({ params: { {camelCase}: id } }))
 
     const edit{classCase} = ({camelCase}) => {
-        getUser({camelCase}.id).then()
+        get{classCase}({camelCase}.id).then()
         setPageData(pageObject({camelCase}))
     }
 
@@ -41,10 +39,10 @@ export default function Index({ auth }) {
             Name: <Name value={{camelCase}.name} />,
             Actions: (
                 <Actions
-                    edit={<EditActionButton module={'{camelCase}'} onClick={() => editUser({camelCase})} />}
+                    edit={<EditActionButton module={'{underscoreCase}'} onClick={() => editUser({camelCase})} />}
                     deleteAction={
                          <DeleteActionButton
-                             module={'{camelCase}'}
+                             module={'{underscoreCase}'}
                              route={destroy.route({ {camelCase}: {camelCase}.id })}
                              refresh={get{classCasePlural}}
                          />
@@ -67,15 +65,15 @@ export default function Index({ auth }) {
     }, [{camelCasePlural}])
 
     return (
-        <Master user={auth.user} header={'{classCasePlural}'}>
-            <Head title="{classCasePlural}" />
+        <Master user={auth.user} header={'{titleCase}'}>
+            <Head title="{titleCase}" />
 
             <PageHeader
-                title={'{classCasePlural}'}
-                subtitle={'Find all of your business’s {classCasePlural} and there associated details.'}
+                title={'{titleCase}'}
+                subtitle={'Find all of your business’s {titleCase} and there associated details.'}
                 action={
                    <CreateActionButton
-                       module={'{camelCase}'}
+                       module={'{underscoreCase}'}
                        onClick={() => {
                            set{classCase}(null)
                            setPageData(pageObject(null))
