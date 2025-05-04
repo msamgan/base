@@ -17,13 +17,13 @@ return new class extends Migration
         $menuLabel = '{menuLabel}';
         $menuIcon = '{menuIcon}';
         $parentId = '{parentId}';
-        $haveNewParent = '{haveNewParent}'
+        $haveNewParent = '{haveNewParent}';
 
         if ($haveNewParent === 'yes') {
             $parentId = ((new CreateMenu)->handle(
                 label: '{parentMenuLabel}',
                 route: '#',
-                icon: {parentMenuIcon},
+                icon: '{parentMenuIcon}',
                 permission: null,
             ))->getKey();
         }
