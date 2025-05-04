@@ -101,6 +101,8 @@ final class MakeModule extends Command
 
         $this->info("Module: {$moduleName} created successfully");
 
+        passthru('npm run format');
+
         $this->info('To Do:');
         $this->info('1. Update the migrations for the module table.');
         $this->info('4. Run the Migrations.');

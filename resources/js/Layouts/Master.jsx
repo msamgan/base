@@ -15,9 +15,7 @@ export default function Master({ children }) {
                     <div className="content-wrapper">
                         <TopMenu />
 
-                        <div className="container-xxl flex-grow-1 container-p-y">
-                            {children}
-                        </div>
+                        <div className="container-xxl flex-grow-1 container-p-y">{children}</div>
 
                         <Footer />
                         <div className="content-backdrop fade"></div>
