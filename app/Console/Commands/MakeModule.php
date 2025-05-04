@@ -84,24 +84,34 @@ final class MakeModule extends Command
         $this->info("Creating module: {$moduleName}");
 
         Artisan::call('make:model', ['name' => $this->case['classCase'], '--all' => true]);
+        $this->info('Model files created');
 
         $this->createRoutes();
+        $this->info('Routes files created');
+
         $this->createNotifications();
+        $this->info('Notification files created');
 
         sleep(2);
         $this->createModuleMigration($moduleName, $menuLabel, $menuIcon, $parentId, $parentMenuData);
+        $this->info('Module migration created');
 
         $this->createActions();
+        $this->info('Action files created');
 
         $this->replaceController();
+        $this->info('Controller updated.');
 
         $this->createView();
+        $this->info('View files created');
 
         $this->createPermission();
+        $this->info('Permission files created');
 
         $this->info("Module: {$moduleName} created successfully");
 
-        passthru('npm run format');
+        $this->info('Running Formatter...');
+        exec('npm run format');
 
         $this->info('To Do:');
         $this->info('1. Update the migrations for the module table.');
