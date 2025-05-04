@@ -17,6 +17,16 @@ return new class extends Migration
         $menuLabel = '{menuLabel}';
         $menuIcon = '{menuIcon}';
         $parentId = '{parentId}';
+        $haveNewParent = '{haveNewParent}'
+
+        if ($haveNewParent === 'yes') {
+            $parentId = ((new CreateMenu)->handle(
+                label: '{parentMenuLabel}',
+                route: '#',
+                icon: {parentMenuIcon},
+                permission: null,
+            ))->getKey();
+        }
 
         $case = App\Utils\Caseify::handle($moduleName);
 

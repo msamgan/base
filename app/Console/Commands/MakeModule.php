@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Actions\Menu\CreateMenu;
 use App\Models\Menu;
 use App\Utils\Caseify;
 use Illuminate\Console\Command;
@@ -67,8 +66,9 @@ final class MakeModule extends Command
         );
 
         $parentId = null;
+        $parentMenuData = [];
         if ($parentManuOptions === 2) {
-            $parentId = $this->newMenu()->id;
+            $parentMenuData = $this->newMenu();
         } elseif ($parentManuOptions === 3) {
             $parentId = select(
                 label: 'Select the parent menu',
@@ -89,7 +89,7 @@ final class MakeModule extends Command
         $this->createNotifications();
 
         sleep(2);
-        $this->createModuleMigration($moduleName, $menuLabel, $menuIcon, $parentId);
+        $this->createModuleMigration($moduleName, $menuLabel, $menuIcon, $parentId, $parentMenuData);
 
         $this->createActions();
 
@@ -106,7 +106,7 @@ final class MakeModule extends Command
         $this->info('4. Run the Migrations.');
     }
 
-    private function newMenu(): Menu
+    private function newMenu(): array
     {
         $label = text(
             label: 'What is the label for the New Parent Menu?',
@@ -121,12 +121,10 @@ final class MakeModule extends Command
             hint: 'We are using Remix Icon, you can find the icon name here: https://remixicon.com/',
         );
 
-        return (new CreateMenu)->handle(
-            label: $label,
-            route: '#',
-            icon: $icon,
-            permission: null,
-        );
+        return [
+            'label' => $label,
+            'icon' => $icon,
+        ];
     }
 
     private function createRoutes(): void
@@ -169,6 +167,7 @@ final class MakeModule extends Command
         string $menuLabel,
         string $menuIcon,
         ?string $parentId,
+        array $parentMenuData
     ): void {
         $migrationStubFile = $this->getModuleStub('migration');
 
@@ -176,6 +175,16 @@ final class MakeModule extends Command
         $migrationStubFile = str_replace('{menuLabel}', $menuLabel, $migrationStubFile);
         $migrationStubFile = str_replace('{menuIcon}', $menuIcon, $migrationStubFile);
         $migrationStubFile = str_replace('{parentId}', $parentId ?? '', $migrationStubFile);
+
+        if (count($parentMenuData) > 0) {
+            $migrationStubFile = str_replace('{haveNewParent}', 'yes', $migrationStubFile);
+            $migrationStubFile = str_replace('{parentMenuLabel}', $parentMenuData['label'], $migrationStubFile);
+            $migrationStubFile = str_replace('{parentMenuIcon}', $parentMenuData['icon'], $migrationStubFile);
+        } else {
+            $migrationStubFile = str_replace('{haveNewParent}', 'no', $migrationStubFile);
+            $migrationStubFile = str_replace('{parentMenuLabel}', 'NA', $migrationStubFile);
+            $migrationStubFile = str_replace('{parentMenuIcon}', 'NA', $migrationStubFile);
+        }
 
         $timestamp = now()->format('Y_m_d_His');
 
