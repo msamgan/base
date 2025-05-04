@@ -10,11 +10,13 @@ import { useEffect, useState } from 'react'
 import Name from '@/Components/helpers/Name.jsx'
 import ActiveBadge from '@/Components/helpers/ActiveBadge.jsx'
 import Actions from '@/Components/helpers/Actions.jsx'
-import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
 import { permissions } from '@/Utils/permissions/index.js'
 import { destroy, roles as _roles, show } from '@actions/RoleController.js'
 import { permissions as _permissions } from '@actions/PermissionController.js'
 import usePermissions from '@/Hooks/usePermissions'
+import EditActionButton from '@/Components/EditActionButton.jsx'
+import DeleteActionButton from '@/Components/DeleteActionButton.jsx'
+import CreateActionButton from '@/Components/CreateActionButton.jsx'
 
 export default function Index({ auth }) {
     const { can } = usePermissions()
@@ -23,7 +25,7 @@ export default function Index({ auth }) {
     const [role, setRole] = useState(null)
     const [data, setData] = useState([])
     const [pageData, setPageData] = useState(pageObject(null))
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [permissionsList, setPermissionsList] = useState([])
 
     const getPermissions = async () => setPermissionsList(await _permissions.data({}))
@@ -32,6 +34,11 @@ export default function Index({ auth }) {
 
     const getRole = async (id) => setRole(await show.data({ params: { role: id } }))
 
+    const editRole = (role) => {
+        getRole(role.id).then()
+        setPageData(pageObject(role))
+    }
+
     const processRole = (role) => {
         return {
             Name: <Name value={role.display_name} />,
@@ -39,33 +46,13 @@ export default function Index({ auth }) {
             Status: <ActiveBadge value={'Active'} />,
             Actions: (
                 <Actions
-                    edit={
-                        can([permissions.role.view, permissions.role.update]) ? (
-                            <OffCanvasButton
-                                onClick={() => getRole(role.id).then()}
-                                className={'dropdown-item'}
-                                id="roleFormCanvas"
-                            >
-                                {can(permissions.role.update) ? (
-                                    <>
-                                        <i className="ri-pencil-line me-1 text-primary"></i> Edit
-                                    </>
-                                ) : can(permissions.role.view) ? (
-                                    <>
-                                        <i className="ri-eye me-1 text-primary"></i> view
-                                    </>
-                                ) : null}
-                            </OffCanvasButton>
-                        ) : null
-                    }
+                    edit={<EditActionButton module={'role'} onClick={() => editRole(role)} />}
                     deleteAction={
-                        can(permissions.role.delete) ? (
-                            <DeleteEntityForm
-                                action={destroy.route({ role: role.id })}
-                                refresh={getRoles}
-                                className={'dropdown-item'}
-                            />
-                        ) : null
+                        <DeleteActionButton
+                            module={'role'}
+                            route={destroy.route({ role: role.id })}
+                            refresh={getRoles}
+                        />
                     }
                 />
             ),
@@ -74,15 +61,15 @@ export default function Index({ auth }) {
 
     useEffect(() => {
         if (can(permissions.role.list)) {
-            getRoles().then()
+            getRoles()
+                .then()
+                .finally(() => setLoading(false))
         }
 
         getPermissions().then()
     }, [])
 
     useEffect(() => setData(roles.map((role) => processRole(role))), [roles])
-
-    useEffect(() => setPageData(pageObject(role)), [role])
 
     return (
         <Master user={auth.user}>
@@ -92,22 +79,17 @@ export default function Index({ auth }) {
                 title={'Roles'}
                 subtitle={'Find all of your business’s roles and there associated permissions.'}
                 action={
-                    can(permissions.role.create) && (
-                        <OffCanvasButton
-                            onClick={() => {
-                                setRole(null)
-                                setPageData(pageObject(null))
-                            }}
-                            id="roleFormCanvas"
-                        >
-                            <i className="ri-add-line me-2"></i>
-                            Create Role
-                        </OffCanvasButton>
-                    )
+                    <CreateActionButton
+                        module={'role'}
+                        onClick={() => {
+                            setRole(null)
+                            setPageData(pageObject(null))
+                        }}
+                    />
                 }
             ></PageHeader>
 
-            {(can(permissions.role.create) || can(permissions.role.view) || can(permissions.role.update)) && (
+            {can([permissions.role.view, permissions.role.update, permissions.role.create]) && (
                 <OffCanvas id="roleFormCanvas" title={pageData.title}>
                     <Form getRoles={getRoles} role={role} permissionsList={permissionsList} />
                 </OffCanvas>

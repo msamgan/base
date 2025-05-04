@@ -12,15 +12,14 @@ import { permissions } from '@/Utils/permissions/index.js'
 export default function Form({ getRoles, role = null, permissionsList }) {
     const { can } = usePermissions()
 
-    const [disableSave, setDisableSave] = useState(true)
+    const [showSaveButton, setShowSaveButton] = useState(false)
     const [action, setAction] = useState(store.route())
     const { data, setData, post, errors, processing, recentlySuccessful, reset } = useForm(dataObject(role))
 
     useEffect(() => {
-        console.log(role ? can(permissions.role.update) : can(permissions.role.create))
         setAction(role ? update.route({ role: role.id }) : store.route())
         setData(dataObject(role))
-        setDisableSave(role ? !can(permissions.role.update) : !can(permissions.role.create))
+        setShowSaveButton(role ? can(permissions.role.update) : can(permissions.role.create))
     }, [role])
 
     const submit = (e) => {
@@ -124,20 +123,22 @@ export default function Form({ getRoles, role = null, permissionsList }) {
                 </div>
             </div>
 
-            <div className="d-flex justify-content-end w-2/3 gap-4">
-                <button disabled={processing || disableSave} className="btn btn-primary">
-                    Save Changes
-                </button>
-                <Transition
-                    show={recentlySuccessful}
-                    enter="transition ease-in-out"
-                    enterFrom="opacity-0"
-                    leave="transition ease-in-out"
-                    leaveTo="opacity-0"
-                >
-                    <p className="mt-3 text-sm text-gray-600">Saved.</p>
-                </Transition>
-            </div>
+            {showSaveButton && (
+                <div className="d-flex justify-content-end w-2/3 gap-4">
+                    <button disabled={processing} className="btn btn-primary">
+                        Save Changes
+                    </button>
+                    <Transition
+                        show={recentlySuccessful}
+                        enter="transition ease-in-out"
+                        enterFrom="opacity-0"
+                        leave="transition ease-in-out"
+                        leaveTo="opacity-0"
+                    >
+                        <p className="mt-3 text-sm text-gray-600">Saved.</p>
+                    </Transition>
+                </div>
+            )}
         </form>
     )
 }

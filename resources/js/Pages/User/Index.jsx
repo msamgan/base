@@ -11,12 +11,12 @@ import { pageObject } from '@/Pages/User/helper.js'
 import PageHeader from '@/Components/PageHeader.jsx'
 import OffCanvas from '@/Components/off_canvas/OffCanvas.jsx'
 import Form from '@/Pages/User/Partials/Form.jsx'
-import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
 import { roles as rcRoles } from '@actions/RoleController.js'
-import { destroy, show, users as ucUsers } from '@actions/UserController.js'
+import { destroy, show, users as _users } from '@actions/UserController.js'
 import usePermissions from '@/Hooks/usePermissions'
 import EditActionButton from '@/Components/EditActionButton.jsx'
 import DeleteActionButton from '@/Components/DeleteActionButton.jsx'
+import CreateActionButton from '@/Components/CreateActionButton.jsx'
 
 export default function Index({ auth }) {
     const { can } = usePermissions()
@@ -28,7 +28,7 @@ export default function Index({ auth }) {
     const [pageData, setPageData] = useState(pageObject(null))
     const [roles, setRoles] = useState([])
 
-    const getUsers = async () => setUsers(await ucUsers.data({}))
+    const getUsers = async () => setUsers(await _users.data({}))
 
     const getRoles = async () => setRoles(await rcRoles.data({}))
 
@@ -47,7 +47,13 @@ export default function Index({ auth }) {
             Actions: (
                 <Actions
                     edit={<EditActionButton module={'user'} onClick={() => editUser(user)} />}
-                    deleteAction={<DeleteActionButton module={'user'} route={destroy.route({ user: user.id })} refresh={getUsers} />}
+                    deleteAction={
+                        <DeleteActionButton
+                            module={'user'}
+                            route={destroy.route({ user: user.id })}
+                            refresh={getUsers}
+                        />
+                    }
                 />
             ),
         }
@@ -55,7 +61,9 @@ export default function Index({ auth }) {
 
     useEffect(() => {
         if (can(permissions.user.list)) {
-            getUsers().then().finally(() => setLoading(false))
+            getUsers()
+                .then()
+                .finally(() => setLoading(false))
         }
 
         getRoles().then()
@@ -73,18 +81,13 @@ export default function Index({ auth }) {
                 title={'Users'}
                 subtitle={'Find all of your business’s users and there associated details.'}
                 action={
-                    can(permissions.user.create) && (
-                        <OffCanvasButton
-                            onClick={() => {
-                                setUser(null)
-                                setPageData(pageObject(null))
-                            }}
-                            id="userFormCanvas"
-                        >
-                            <i className="ri-add-line me-2"></i>
-                            Create User
-                        </OffCanvasButton>
-                    )
+                    <CreateActionButton
+                        module={'user'}
+                        onClick={() => {
+                            setUser(null)
+                            setPageData(pageObject(null))
+                        }}
+                    />
                 }
             ></PageHeader>
 

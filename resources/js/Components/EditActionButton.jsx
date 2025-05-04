@@ -6,7 +6,7 @@ export default function EditActionButton({ module, onClick }) {
     const { can } = usePermissions()
 
     return can([permissions[module].view, permissions[module].update]) ? (
-        <OffCanvasButton onClick={onClick} className={'dropdown-item'} id="userFormCanvas">
+        <OffCanvasButton onClick={onClick} className={'dropdown-item'} id={module + 'FormCanvas'}>
             {can(permissions[module].update) ? (
                 <>
                     <i className="ri-pencil-line me-1 text-primary"></i> Edit
