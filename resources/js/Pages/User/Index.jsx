@@ -18,7 +18,7 @@ import EditActionButton from '@/Components/EditActionButton.jsx'
 import DeleteActionButton from '@/Components/DeleteActionButton.jsx'
 import CreateActionButton from '@/Components/CreateActionButton.jsx'
 
-export default function Index({ auth }) {
+export default function Index() {
     const { can } = usePermissions()
 
     const [users, setUsers] = useState([])
@@ -74,7 +74,7 @@ export default function Index({ auth }) {
     }, [users])
 
     return (
-        <Master user={auth.user} header={'Users'}>
+        <Master>
             <Head title="Users" />
 
             <PageHeader

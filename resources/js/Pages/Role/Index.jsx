@@ -18,7 +18,7 @@ import EditActionButton from '@/Components/EditActionButton.jsx'
 import DeleteActionButton from '@/Components/DeleteActionButton.jsx'
 import CreateActionButton from '@/Components/CreateActionButton.jsx'
 
-export default function Index({ auth }) {
+export default function Index() {
     const { can } = usePermissions()
 
     const [roles, setRoles] = useState([])
@@ -72,7 +72,7 @@ export default function Index({ auth }) {
     useEffect(() => setData(roles.map((role) => processRole(role))), [roles])
 
     return (
-        <Master user={auth.user}>
+        <Master>
             <Head title="Roles" />
 
             <PageHeader
