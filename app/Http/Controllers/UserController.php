@@ -60,7 +60,7 @@ final class UserController extends Controller
         }
     }
 
-    #[Action(params: ['user'], middleware: ['auth', 'check_has_business', 'can:user.update'])]
+    #[Action(params: ['user'], middleware: ['auth', 'check_has_business', 'can:user.view'])]
     public function show(User $user): User
     {
         Access::businessCheck(businessId: $user->business_id);

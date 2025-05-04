@@ -40,13 +40,21 @@ export default function Index({ auth }) {
             Actions: (
                 <Actions
                     edit={
-                        can(permissions.role.update) ? (
+                        can([permissions.role.view, permissions.role.update]) ? (
                             <OffCanvasButton
                                 onClick={() => getRole(role.id).then()}
                                 className={'dropdown-item'}
                                 id="roleFormCanvas"
                             >
-                                <i className="ri-pencil-line me-1 text-primary"></i> Edit
+                                {can(permissions.role.update) ? (
+                                    <>
+                                        <i className="ri-pencil-line me-1 text-primary"></i> Edit
+                                    </>
+                                ) : can(permissions.role.view) ? (
+                                    <>
+                                        <i className="ri-eye me-1 text-primary"></i> view
+                                    </>
+                                ) : null}
                             </OffCanvasButton>
                         ) : null
                     }
@@ -99,7 +107,7 @@ export default function Index({ auth }) {
                 }
             ></PageHeader>
 
-            {can(permissions.role.create) && (
+            {(can(permissions.role.create) || can(permissions.role.view) || can(permissions.role.update)) && (
                 <OffCanvas id="roleFormCanvas" title={pageData.title}>
                     <Form getRoles={getRoles} role={role} permissionsList={permissionsList} />
                 </OffCanvas>

@@ -30,12 +30,12 @@ final class Role extends \Spatie\Permission\Models\Role
 
     public static function business(): self
     {
-        return self::find(RoleEnum::Business->id());
+        return self::query()->find(RoleEnum::Business->id());
     }
 
     public static function superAdmin(): self
     {
-        return self::find(RoleEnum::SuperAdmin->id());
+        return self::query()->find(RoleEnum::SuperAdmin->id());
     }
 
     public function getActivitylogOptions(): LogOptions

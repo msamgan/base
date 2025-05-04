@@ -15,6 +15,8 @@ import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
 import { roles as rcRoles } from '@actions/RoleController.js'
 import { destroy, show, users as ucUsers } from '@actions/UserController.js'
 import usePermissions from '@/Hooks/usePermissions'
+import EditActionButton from '@/Components/EditActionButton.jsx'
+import DeleteActionButton from '@/Components/DeleteActionButton.jsx'
 
 export default function Index({ auth }) {
     const { can } = usePermissions()
@@ -22,7 +24,7 @@ export default function Index({ auth }) {
     const [users, setUsers] = useState([])
     const [data, setData] = useState([])
     const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [pageData, setPageData] = useState(pageObject(null))
     const [roles, setRoles] = useState([])
 
@@ -32,6 +34,11 @@ export default function Index({ auth }) {
 
     const getUser = async (id) => setUser(await show.data({ params: { user: id } }))
 
+    const editUser = (user) => {
+        getUser(user.id).then()
+        setPageData(pageObject(user))
+    }
+
     const processUser = (user) => {
         return {
             Name: <Name value={user.name} />,
@@ -39,29 +46,8 @@ export default function Index({ auth }) {
             Status: <ActiveBadge value={'Active'} />,
             Actions: (
                 <Actions
-                    edit={
-                        can(permissions.user.update) ? (
-                            <OffCanvasButton
-                                onClick={() => {
-                                    getUser(user.id).then()
-                                    setPageData(pageObject(user))
-                                }}
-                                className={'dropdown-item'}
-                                id="userFormCanvas"
-                            >
-                                <i className="ri-pencil-line me-1 text-primary"></i> Edit
-                            </OffCanvasButton>
-                        ) : null
-                    }
-                    deleteAction={
-                        can(permissions.user.delete) ? (
-                            <DeleteEntityForm
-                                action={destroy.route({ user: user.id })}
-                                refresh={getUsers}
-                                className={'dropdown-item'}
-                            />
-                        ) : null
-                    }
+                    edit={<EditActionButton module={'user'} onClick={() => editUser(user)} />}
+                    deleteAction={<DeleteActionButton module={'user'} route={destroy.route({ user: user.id })} refresh={getUsers} />}
                 />
             ),
         }
@@ -69,7 +55,7 @@ export default function Index({ auth }) {
 
     useEffect(() => {
         if (can(permissions.user.list)) {
-            getUsers().then()
+            getUsers().then().finally(() => setLoading(false))
         }
 
         getRoles().then()
@@ -102,7 +88,7 @@ export default function Index({ auth }) {
                 }
             ></PageHeader>
 
-            {can(permissions.user.create) && (
+            {can([permissions.user.view, permissions.user.update, permissions.user.create]) && (
                 <OffCanvas id="userFormCanvas" title={pageData.title}>
                     <Form getUsers={getUsers} roles={roles} user={user} />
                 </OffCanvas>
