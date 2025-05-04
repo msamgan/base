@@ -6,14 +6,20 @@ import { Transition } from '@headlessui/react'
 import { dataObject } from '@/Pages/{classCase}/helper.js'
 import { useEffect, useState } from 'react'
 import { store, update } from '@actions/{classCase}Controller.js'
+import usePermissions from '@/Hooks/usePermissions.js'
+import { permissions } from '@/Utils/permissions/index.js'
 
 export default function Form({ get{classCasePlural}, {camelCase} = null}) {
+    const { can } = usePermissions()
+
     const [action, setAction] = useState(store.route())
     const { data, setData, post, errors, processing, recentlySuccessful, reset } = useForm(dataObject(null))
+    const [showSaveButton, setShowSaveButton] = useState(false)
 
     useEffect(() => {
         setAction({camelCase} ? update.route({ {camelCase}: {camelCase}.id }) : store.route())
         setData(dataObject({camelCase}))
+        setShowSaveButton({camelCase} ? can(permissions.{camelCase}.update) : can(permissions.{camelCase}.create))
     }, [{camelCase}])
 
     const submit = (e) => {
@@ -60,20 +66,22 @@ export default function Form({ get{classCasePlural}, {camelCase} = null}) {
                 </div>
             </div>
 
-            <div className="d-flex justify-content-end w-2/3 gap-4">
-                <button disabled={processing} className="btn btn-primary">
-                    Save Changes
-                </button>
-                <Transition
-                    show={recentlySuccessful}
-                    enter="transition ease-in-out"
-                    enterFrom="opacity-0"
-                    leave="transition ease-in-out"
-                    leaveTo="opacity-0"
-                >
-                    <p className="mt-3 text-sm text-gray-600">Saved.</p>
-                </Transition>
-            </div>
+            {showSaveButton && (
+                <div className="d-flex justify-content-end w-2/3 gap-4">
+                    <button disabled={processing} className="btn btn-primary">
+                        Save Changes
+                    </button>
+                    <Transition
+                        show={recentlySuccessful}
+                        enter="transition ease-in-out"
+                        enterFrom="opacity-0"
+                        leave="transition ease-in-out"
+                        leaveTo="opacity-0"
+                    >
+                        <p className="mt-3 text-sm text-gray-600">Saved.</p>
+                    </Transition>
+                </div>
+            )}
         </form>
     )
 }

@@ -47,7 +47,7 @@ class {classCase}Controller extends Controller
         }
     }
 
-    #[Action(params: ['{camelCase}'], middleware: ['auth', 'check_has_business', 'can:{underscoreCase}.update'])]
+    #[Action(params: ['{camelCase}'], middleware: ['auth', 'check_has_business', 'can:{underscoreCase}.view'])]
     public function show({classCase} ${camelCase}): {classCase}
     {
         // Access::businessCheck(businessId: ${camelCase}->business_id);

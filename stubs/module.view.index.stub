@@ -14,6 +14,9 @@ import Form from '@/Pages/{classCase}/Partials/Form.jsx'
 import DeleteEntityForm from '@/Components/layout/DeleteEntityForm.jsx'
 import { destroy, {camelCasePlural} as _{camelCasePlural}, show } from '@actions/{classCase}Controller.js'
 import usePermissions from '@/Hooks/usePermissions'
+import EditActionButton from '@/Components/EditActionButton.jsx'
+import DeleteActionButton from '@/Components/DeleteActionButton.jsx'
+import CreateActionButton from '@/Components/CreateActionButton.jsx'
 
 export default function Index({ auth }) {
     const { can } = usePermissions()
@@ -21,40 +24,30 @@ export default function Index({ auth }) {
     const [{camelCasePlural}, set{classCasePlural}] = useState([])
     const [data, setData] = useState([])
     const [{camelCase}, set{classCase}] = useState(null)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [pageData, setPageData] = useState(pageObject(null))
 
     const get{classCasePlural} = async () => set{classCasePlural}(await _{camelCasePlural}.data({}))
 
     const get{classCase} = async (id) => set{classCase}(await show.data({ params: { {camelCase}: id } }))
 
+    const edit{classCase} = ({camelCase}) => {
+        getUser({camelCase}.id).then()
+        setPageData(pageObject({camelCase}))
+    }
+
     const process{classCase} = ({camelCase}) => {
         return {
             Name: <Name value={{camelCase}.name} />,
             Actions: (
                 <Actions
-                    edit={
-                        can(permissions.{underscoreCase}.update) ? (
-                            <OffCanvasButton
-                                onClick={() => {
-                                    get{classCase}({camelCase}.id).then()
-                                    setPageData(pageObject({camelCase}))
-                                }}
-                                className={'dropdown-item'}
-                                id="{camelCase}FormCanvas"
-                            >
-                                <i className="ri-pencil-line me-1 text-primary"></i> Edit
-                            </OffCanvasButton>
-                        ) : null
-                    }
+                    edit={<EditActionButton module={'{camelCase}'} onClick={() => editUser({camelCase})} />}
                     deleteAction={
-                        can(permissions.{underscoreCase}.delete) ? (
-                            <DeleteEntityForm
-                                action={destroy.route({ {camelCase}: {camelCase}.id })}
-                                refresh={get{classCasePlural}}
-                                className={'dropdown-item'}
-                            />
-                        ) : null
+                         <DeleteActionButton
+                             module={'{camelCase}'}
+                             route={destroy.route({ {camelCase}: {camelCase}.id })}
+                             refresh={get{classCasePlural}}
+                         />
                     }
                 />
             ),
@@ -63,13 +56,15 @@ export default function Index({ auth }) {
 
     useEffect(() => {
         if (can(permissions.{underscoreCase}.list)) {
-            get{classCasePlural}().then()
+            get{classCasePlural}()
+                .then()
+                .finally(() => setLoading(false))
         }
     }, [])
 
     useEffect(() => {
         setData({camelCasePlural}.map(({camelCase}) => process{classCase}({camelCase})))
-    }, [{camelCase}])
+    }, [{camelCasePlural}])
 
     return (
         <Master user={auth.user} header={'{classCasePlural}'}>
@@ -79,22 +74,17 @@ export default function Index({ auth }) {
                 title={'{classCasePlural}'}
                 subtitle={'Find all of your business’s {classCasePlural} and there associated details.'}
                 action={
-                    can(permissions.{underscoreCase}.create) && (
-                        <OffCanvasButton
-                            onClick={() => {
-                                set{classCase}(null)
-                                setPageData(pageObject(null))
-                            }}
-                            id="{camelCase}FormCanvas"
-                        >
-                            <i className="ri-add-line me-2"></i>
-                            Create {classCase}
-                        </OffCanvasButton>
-                    )
-                }
+                   <CreateActionButton
+                       module={'{camelCase}'}
+                       onClick={() => {
+                           set{classCase}(null)
+                           setPageData(pageObject(null))
+                       }}
+                   />
+               }
             ></PageHeader>
 
-            {can(permissions.{underscoreCase}.create) && (
+            {can([permissions.{underscoreCase}.view, permissions.{underscoreCase}.update, permissions.{underscoreCase}.create]) && (
                 <OffCanvas id="{camelCase}FormCanvas" title={pageData.title}>
                     <Form get{classCasePlural}={get{classCasePlural}} {camelCase}={{camelCase}} />
                 </OffCanvas>
