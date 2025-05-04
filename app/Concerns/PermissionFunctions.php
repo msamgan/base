@@ -10,4 +10,15 @@ trait PermissionFunctions
     {
         return $module . '.' . $permission;
     }
+
+    public function permissionList(): array
+    {
+        return [
+            'list',
+            'create',
+            'view',
+            'update',
+            'delete',
+        ];
+    }
 }

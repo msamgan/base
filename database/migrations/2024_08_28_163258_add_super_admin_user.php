@@ -11,7 +11,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        $superAdmin = User::create([
+        $superAdmin = User::query()->create([
             'name' => 'Super Admin',
             'email' => 'sadmin@base.com',
             'password' => bcrypt('Pass@123!321'),
@@ -19,7 +19,7 @@ return new class extends Migration
             'role_id' => RoleEnum::SuperAdmin->id(),
         ]);
 
-        $superAdmin->assignRole(Role::find(RoleEnum::SuperAdmin->id()));
+        $superAdmin->assignRole(Role::superAdmin());
     }
 
     public function down(): void

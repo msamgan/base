@@ -22,7 +22,7 @@ return new class extends Migration
             route: 'role.index',
             icon: 'ri-shield-user-line',
             permission: PermissionEnum::RoleList->value,
-            parent: $userManagement->id
+            parent: $userManagement->getKey()
         );
 
         (new CreateMenu)->handle(
@@ -30,7 +30,7 @@ return new class extends Migration
             route: 'user.index',
             icon: 'ri-user-3-line',
             permission: PermissionEnum::UserList->value,
-            parent: $userManagement->id
+            parent: $userManagement->getKey()
         );
     }
 

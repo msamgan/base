@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 
 return new class extends Migration
 {
+    use App\Concerns\PermissionFunctions;
+
     public function up(): void
     {
         Role::create([
@@ -18,14 +20,7 @@ return new class extends Migration
             'name' => Str::uuid()->toString(),
         ]);
 
-        $businessPermissions = [
-            'list',
-            'create',
-            'update',
-            'delete',
-        ];
-
-        foreach ($businessPermissions as $permission) {
+        foreach ($this->permissionList() as $permission) {
             (new CreatePermission)->handle(
                 permission: $permission,
                 module: RoleEnum::Business->label()

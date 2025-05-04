@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Actions\Business\CreateBusiness;
 use App\Actions\Role\AssignRole;
-use App\Enums\RoleEnum;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 
@@ -21,7 +21,7 @@ return new class extends Migration
             'email_verified_at' => now(),
         ]);
 
-        (new AssignRole)->handle(user: $user, role: RoleEnum::Business->role(), makeRoleActive: true);
+        (new AssignRole)->handle(user: $user, role: Role::business(), makeRoleActive: true);
 
         (new CreateBusiness)->handle(user: $user, businessName: $businessName, makeBusinessActive: true);
     }
