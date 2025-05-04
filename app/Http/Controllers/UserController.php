@@ -106,7 +106,7 @@ final class UserController extends Controller
             ->with(['roles']);
 
         if (! auth()->user()->hasRole([RoleEnum::Business, RoleEnum::SuperAdmin])) {
-            $query->whereDoesntHave('roles', function ($q) {
+            $query->whereDoesntHave('roles', function ($q): void {
                 $q->where('display_name', RoleEnum::Business);
             });
         }

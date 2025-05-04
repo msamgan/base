@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 
 return new class extends Migration
 {
+    use App\Concerns\PermissionFunctions;
+
     public function up(): void
     {
         $moduleName = '{moduleName}';
@@ -16,19 +18,13 @@ return new class extends Migration
         $menuIcon = '{menuIcon}';
         $parentId = '{parentId}';
 
-        // $classCase = Str::of($moduleName)->trim()->title()->replace(' ', '')->toString();
-        $underscoreCase = Str::of($moduleName)->trim()->snake()->replace(' ', '_')->toString();
+        $case = App\Utils\Caseify::handle($moduleName);
 
-        $rolePermissions = [
-            'list',
-            'create',
-            'update',
-            'delete',
-        ];
+        $underscoreCase = $case['underscoreCase'];
 
-        $businessRole = Role::find(RoleEnum::Business->id());
+        $businessRole = Role::business();
 
-        foreach ($rolePermissions as $permission) {
+        foreach ($this->permissionList() as $permission) {
             (new AssignPermissionToRole)->handle(
                 role: $businessRole,
                 permission: $permission,

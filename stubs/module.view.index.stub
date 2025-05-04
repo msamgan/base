@@ -39,7 +39,7 @@ export default function Index({ auth }) {
             Name: <Name value={{camelCase}.name} />,
             Actions: (
                 <Actions
-                    edit={<EditActionButton module={'{underscoreCase}'} onClick={() => editUser({camelCase})} />}
+                    edit={<EditActionButton module={'{underscoreCase}'} onClick={() => edit{classCase}({camelCase})} />}
                     deleteAction={
                          <DeleteActionButton
                              module={'{underscoreCase}'}
