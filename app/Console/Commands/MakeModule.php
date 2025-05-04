@@ -230,7 +230,10 @@ final class MakeModule extends Command
         $classCase = $this->case['classCase'];
 
         // JS Part...
-        file_put_contents(resource_path("js/Utils/permissions/{$underscoreCase}.js"), $this->runReplacers(content: $this->getModuleStub('permission')));
+        file_put_contents(
+            resource_path("js/Utils/permissions/{$underscoreCase}.js"),
+            $this->runReplacers(content: $this->getModuleStub('permission'))
+        );
 
         $permissionImport = "import { {$underscoreCase} } from '@/Utils/permissions/{$underscoreCase}.js';";
         $addStatement = "    $underscoreCase,";
@@ -253,6 +256,7 @@ final class MakeModule extends Command
 
         $newPermission = "    case {$classCase}List = '{$underscoreCase}.list';\n";
         $newPermission .= "    case {$classCase}Create = '{$underscoreCase}.create';\n";
+        $newPermission .= "    case {$classCase}View = '{$underscoreCase}.view';\n";
         $newPermission .= "    case {$classCase}Update = '{$underscoreCase}.update';\n";
         $newPermission .= "    case {$classCase}Delete = '{$underscoreCase}.delete';\n";
         $newPermission .= "\n";
@@ -260,6 +264,7 @@ final class MakeModule extends Command
         $newPermissionCan = "\n";
         $newPermissionCan .= "            self::{$classCase}List => 'can:{$underscoreCase}.list',\n";
         $newPermissionCan .= "            self::{$classCase}Create => 'can:{$underscoreCase}.create',\n";
+        $newPermissionCan .= "            self::{$classCase}View => 'can:{$underscoreCase}.view',\n";
         $newPermissionCan .= "            self::{$classCase}Update => 'can:{$underscoreCase}.update',\n";
         $newPermissionCan .= "            self::{$classCase}Delete => 'can:{$underscoreCase}.delete',\n";
 
